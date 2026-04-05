@@ -16,16 +16,28 @@
       position: absolute;
       top: 40%;
       width: 100%;
+      transition: opacity 1s;
     }
 
     input {
       padding: 10px;
       font-size: 16px;
+      border-radius: 8px;
+      border: none;
     }
 
     button {
-      padding: 10px;
+      padding: 10px 15px;
       font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background: pink;
+      color: black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: hotpink;
     }
 
     .heart {
@@ -35,8 +47,8 @@
     }
 
     @keyframes fall {
-      0% { top: -10%; }
-      100% { top: 100%; }
+      0% { top: -10%; opacity: 1; }
+      100% { top: 100%; opacity: 0; }
     }
   </style>
 </head>
@@ -46,22 +58,55 @@
 <div id="login">
   <h2>Enter Password 💌</h2>
   <input type="password" id="pass">
-  <button onclick="check()">Enter</button>
+  <br><br>
+  <button onclick="check()">Open 💖</button>
 </div>
 
-<audio id="music" src="song.mp3"></audio>
+<audio id="music" loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 function check() {
   let p = document.getElementById("pass").value;
 
   if(p === "111498") {
-    document.getElementById("login").style.display = "none";
-    startEffect();
-    document.getElementById("music").play();
+    let loginBox = document.getElementById("login");
+
+    // fade out login
+    loginBox.style.opacity = "0";
+    
+    setTimeout(() => {
+      loginBox.style.display = "none";
+      startEffect();
+
+      // play music (with safety)
+      let music = document.getElementById("music");
+      music.volume = 0;
+      music.play().then(() => {
+        fadeInMusic(music);
+      }).catch(() => {
+        console.log("Autoplay blocked");
+      });
+
+    }, 1000);
+
   } else {
     alert("Wrong password!");
   }
+}
+
+// smooth volume naik
+function fadeInMusic(audio) {
+  let vol = 0;
+  let interval = setInterval(() => {
+    if (vol < 1) {
+      vol += 0.05;
+      audio.volume = vol;
+    } else {
+      clearInterval(interval);
+    }
+  }, 200);
 }
 
 function startEffect() {
@@ -97,3 +142,6 @@ function startEffect() {
   }, 200);
 }
 </script>
+
+</body>
+</html>
