@@ -28,27 +28,28 @@
       margin-bottom: 20px;
     }
 
-   input {
-    padding: 12px 15px;
-    font-size: 16px;
-    border-radius: 12px;
-    border: none;
-    outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ff4d6d;
-    text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 10px rgba(255,255,255,0.2);
-    text-align: center;
-    transition: 0.3s;
-}
+    input {
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ff4d6d;
+      text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      text-align: center;
+      transition: 0.3s;
+    }
 
-   input:focus {
-    box-shadow: 0 0 15px #ff4d6d;
-}
-   input::placeholder {
-    color: #ff85a2;
-    opacity: 0.7;
+    input:focus {
+      box-shadow: 0 0 15px #ff4d6d;
+    }
+
+    input::placeholder {
+      color: #ff85a2;
+      opacity: 0.7;
     }
 
     button {
@@ -72,42 +73,40 @@
       height: 100%;
     }
 
-   #countdown-num {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(1);
-    font-size: min(18vw, 160px); /* sikit kecil dari sekarang */
-    font-weight: 900;
-    color: #ff69b4;
-    text-shadow: 
-     0 0 20px #ff1493,
-     0 0 50px #ff69b4,
-     0 0 80px #ff1493;
-    font-family: 'Arial Black', sans-serif;
-    z-index: 60;
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.35s ease, opacity 0.35s ease;
-}
+    #countdown-num {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      font-size: min(18vw, 160px);
+      font-weight: 900;
+      color: #ff69b4;
+      text-shadow: 
+       0 0 20px #ff1493,
+       0 0 50px #ff69b4,
+       0 0 80px #ff1493;
+      font-family: 'Arial Black', sans-serif;
+      z-index: 60;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s ease, opacity 0.35s ease;
     }
 
     .heart {
-     position: absolute;
-     animation: fall linear forwards;
-     will-change: transform;
+      position: absolute;
+      animation: fall 5s linear forwards;
+      will-change: transform;
     }
 
-   @keyframes fall {
-     0% {
-       transform: translate(0, 0);
-       opacity: 1;
-     }
-     100% {
-       transform: translate(calc(-50px + 100px * 
- var(--rand)), 110vh);
-      opacity: 0;
-   }
- }
+    @keyframes fall {
+      0% {
+        transform: translate(0, 0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(calc(-50px + 100px * var(--rand)), 110vh);
+        opacity: 0;
+      }
+    }
 
     .wish {
       position: absolute;
@@ -148,6 +147,7 @@
     }
   </style>
 </head>
+
 <body>
 
 <div id="login">
@@ -169,8 +169,6 @@
 </audio>
 
 <script>
-const heartEmojis = ['❤️'];
-
 function check() {
   if (document.getElementById('pass').value === '111498') {
     document.getElementById('login').style.display = 'none';
@@ -178,7 +176,7 @@ function check() {
   }
 }
 
-/* MATRIX FULL */
+/* MATRIX */
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block'; 
@@ -197,22 +195,19 @@ function startMatrix() {
     ctx.fillStyle = "rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  const glow = Math.random();
-    ctx.fillStyle = glow > 0.95 ? "#fff0f8" : glow > 0.7 ? "#ff69b4" : "#aa1155";
+    ctx.fillStyle = "#ff69b4";
     ctx.font = size + "px monospace";
 
     drops.forEach((y, i) => {
-  const text = chars[Math.floor(Math.random() * chars.length)];
+      const text = chars[Math.floor(Math.random() * chars.length)];
       ctx.fillText(text, i*size, y*size);
       if (y * size > canvas.height && Math.random() > 0.97) {
-    drops[i] = Math.random() * -20;
-  }
+        drops[i] = Math.random() * -20;
+      }
+      drops[i]++;
+    });
 
-  drops[i]++; // bagi dia turun smooth
-});
-
-}, 33); // tutup setInterval
-      
+  }, 33);
 
   setTimeout(() => {
     runCountdown(3, () => {
@@ -240,10 +235,7 @@ function runCountdown(n, cb) {
   }
 
   function next() {
-    if (n < 1) {
-      cb();
-      return;
-    }
+    if (n < 1) return cb();
     showNum(n--, () => setTimeout(next, 100));
   }
 
@@ -261,24 +253,27 @@ function fadeMusic() {
   },200);
 }
 
-/* EFFECT */
+/* EFFECT FIXED */
 function startEffect() {
   const images = ['pic1.jpg','pic2.jpg','pic3.jpg'];
 
   setInterval(()=>{
     const img=document.createElement('img');
     img.src=images[Math.random()*images.length|0];
+
     img.style.position='absolute';
     img.style.top='-100px';
     img.style.left=Math.random()*100+'%';
     img.style.width=(Math.random()*80+50)+'px';
+
+    img.style.setProperty('--rand', Math.random());
+
     img.style.animation='fall 5s linear';
     document.body.appendChild(img);
+
     setTimeout(()=>img.remove(),5000);
   },300);
 
-  
-    // Heart jatuh
   setInterval(() => {
     let heart = document.createElement("div");
     heart.className = "heart";
@@ -286,8 +281,10 @@ function startEffect() {
     heart.style.left = Math.random() * 100 + "%";
     heart.style.fontSize = (Math.random() * 20 + 10) + "px";
 
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
+    heart.style.setProperty('--rand', Math.random());
+
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),6000);
   },180);
 
   setInterval(()=>{
@@ -297,6 +294,7 @@ function startEffect() {
     t.style.left=Math.random()*100+'%';
     t.style.top=(Math.random()*80+10)+'%';
     t.style.fontSize=(Math.random()*20+20)+'px';
+
     document.body.appendChild(t);
     setTimeout(()=>t.remove(),4000);
   },500);
