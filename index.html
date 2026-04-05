@@ -18,7 +18,6 @@
       top: 40%;
       width: 100%;
       transition: opacity 1s;
-      z-index: 100; /* Pastikan butang boleh tekan */
     }
 
     h2 {
@@ -95,24 +94,15 @@
       transition: transform 0.35s ease, opacity 0.35s ease;
     }
 
-    /* ── FALLING ELEMENTS ── */
-    .heart, .falling-text {
+    /* ── FALLING HEARTS ── */
+    .heart {
       position: absolute;
       animation: fall 5s linear forwards;
       pointer-events: none;
     }
 
-    /* Tambahan style untuk tulisan turun */
-    .falling-text {
-      font-family: 'Great Vibes', cursive;
-      color: #ff4d6d;
-      white-space: nowrap;
-      text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
-      z-index: 40;
-    }
-
     @keyframes fall {
-      0%   { top: -15%; opacity: 1; }
+      0%   { top: -10%; opacity: 1; }
       100% { top: 100%; opacity: 0; }
     }
   </style>
@@ -202,6 +192,7 @@ function startMatrix() {
     }
   }, 33);
 
+  // countdown start after 1.5s
   setTimeout(() => {
     runCountdown(3, () => {
       clearInterval(matrixIv);
@@ -210,7 +201,7 @@ function startMatrix() {
         phase.style.display = 'none';
         phase.style.opacity = '1';
         startEffect();
-        fadeInMusic(); 
+        fadeInMusic(); // music only starts here, lepas countdown habis
       }, 1000);
     });
   }, 1500);
@@ -239,11 +230,10 @@ function runCountdown(from, cb) {
   next();
 }
 
-/* ── startEffect (Original with Text integration) ── */
+/* ── ORIGINAL startEffect ── */
 function startEffect() {
   const images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg'];
 
-  // Gambar Turun
   setInterval(() => {
     const img = document.createElement('img');
     img.src = images[Math.floor(Math.random() * images.length)];
@@ -255,3 +245,17 @@ function startEffect() {
     document.body.appendChild(img);
     setTimeout(() => img.remove(), 5000);
   }, 300);
+
+  setInterval(() => {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    heart.style.left = Math.random() * 100 + '%';
+    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+  }, 200);
+}
+</script>
+</body>
+</html>
