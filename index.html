@@ -98,8 +98,14 @@
     }
 
     @keyframes fall {
-      0% { top: -10%; }
-      100% { top: 100%; opacity: 0; }
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
     }
 
     .wish {
