@@ -97,16 +97,17 @@
      will-change: transform;
     }
 
-    @keyframes fall {
-      0% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(110vh);
-        opacity: 0;
-      }
-    }
+   @keyframes fall {
+     0% {
+       transform: translate(0, 0);
+       opacity: 1;
+     }
+     100% {
+       transform: translate(calc(-50px + 100px * 
+ var(--rand)), 110vh);
+      opacity: 0;
+   }
+ }
 
     .wish {
       position: absolute;
@@ -279,20 +280,22 @@ function startEffect() {
   setInterval(()=>{
     const h = document.createElement('div');
     h.className = 'heart';
-    h.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    h.innerHTML = 
+    heartEmojis[Math.floor(Math.random() * 
+    heartEmojis.length)];
 
-    // random position across full screen
+    // random kiri kanan
+    h.style.setProperty('--rand', Math.random());
+
+    // position
     h.style.left = Math.random() * window.innerWidth + 'px';
-    h.style.top = Math.random() * -200 + 'px'; //
+    h.style.top = Math.random() * -200 + 'px';
 
     // random size
     h.style.fontSize = (Math.random() * 20 + 12) + 'px';
 
     // random fall speed
     h.style.animationDuration = (Math.random() * 3 + 3) + 's';
-
-    // sway kiri kanan (wind effect)
-    h.style.left = Math.random() * window.innerWidth + 'px';
 
     // blur depth (fake 3D feel)
     h.style.filter = `blur(${Math.random()*1.5}px)`;
