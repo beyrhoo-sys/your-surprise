@@ -1,105 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="ms">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>For my beautiful girl ❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
+      padding: 0;
       background: #000;
       overflow: hidden;
       color: white;
       font-family: 'Poppins', sans-serif;
-      text-align: center;
+      height: 100vh;
+      width: 100vw;
     }
 
+    /* Pastikan login sentiasa di depan sekali sebelum bermula */
     #login {
-      position: absolute;
-      top: 40%;
-      width: 100%;
-      z-index: 1000;
-      display: block;
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999; 
+      background: radial-gradient(circle at center, #1a001a, #000);
     }
 
     h2 {
       font-family: 'Great Vibes', cursive;
-      font-size: 48px;
+      font-size: 36px;
       color: #ff4d6d;
-      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      margin-bottom: 20px;
     }
 
     input {
-      padding: 12px 15px;
+      padding: 12px;
       font-size: 16px;
-      border-radius: 12px;
-      border: none;
+      border-radius: 10px;
+      border: 1px solid #ff4d6d;
       background: rgba(255, 255, 255, 0.1);
       color: #ff4d6d;
       text-align: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      outline: none;
     }
 
     button {
-      padding: 12px 20px;
+      padding: 12px 30px;
       font-size: 16px;
-      border-radius: 12px;
+      border-radius: 10px;
       border: none;
-      background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+      background: #ff4d6d;
       color: white;
+      margin-top: 15px;
       cursor: pointer;
-      margin-top: 20px;
     }
 
-    /* ── MATRIX & ELEMENTS ── */
     #matrix-phase {
       position: fixed;
       inset: 0;
       display: none;
-      z-index: 50;
+      z-index: 100;
     }
 
-    canvas#matrixCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+    canvas { display: block; }
 
     #countdown-num {
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 150px;
-      font-weight: 900;
+      font-size: 100px;
+      font-weight: bold;
       color: #ff69b4;
-      z-index: 60;
-      opacity: 0;
-      pointer-events: none;
+      z-index: 200;
+      display: none;
     }
 
-    .heart, .falling-img, .falling-text {
+    /* Animasi Falling */
+    .falling-item {
       position: absolute;
       pointer-events: none;
-      z-index: 5;
-    }
-
-    .falling-text {
-      font-family: 'Great Vibes', cursive;
-      color: #ff4d6d;
-      text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
-      white-space: nowrap;
+      z-index: 50;
+      animation: fall linear forwards;
     }
 
     @keyframes fall {
-      0% { transform: translateY(-20vh) rotate(0deg); opacity: 0; }
-      15% { opacity: 1; }
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
       100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-    }
-
-    @keyframes fallText {
-      0% { transform: translateY(-20vh); opacity: 0; }
-      15% { opacity: 1; }
-      100% { transform: translateY(110vh); opacity: 0; }
     }
   </style>
 </head>
@@ -107,8 +97,7 @@
 
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
-  <input type="password" id="pass" placeholder="Enter password...">
-  <br>
+  <input type="password" id="pass" placeholder="Password...">
   <button onclick="check()">Open 💖</button>
 </div>
 
@@ -123,144 +112,111 @@
 </audio>
 
 <script>
-const heartEmojis = ['❤️','💓','💖','💘', '✨'];
+const heartEmojis = ['❤️','💓','💖','✨'];
+const wishes = ['Happy Birthday Sayang ❤️', 'I Love You', 'Beautiful', 'My Queen 👑'];
+const images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg'];
 
 function check() {
   const p = document.getElementById('pass').value;
   if (p === '111498') {
-    // Sembunyikan login terus
     document.getElementById('login').style.display = 'none';
     startMatrix();
   } else {
-    alert('Wrong password! Cuba lagi sayang.');
+    alert('Salah sayang! Cuba lagi.');
   }
 }
 
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block';
-
   const canvas = document.getElementById('matrixCanvas');
   const ctx = canvas.getContext('2d');
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-  const chars = 'アイウエオカキクケコ0123456789♥♡★';
-  const fs = 16;
-  let drops = Array.from({ length: Math.floor(window.innerWidth / fs) }, () => Math.random() * -100);
+  const chars = '01♥'.split('');
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = Array(Math.floor(columns)).fill(1);
 
-  const matrixInterval = setInterval(() => {
-    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+  const matrixIv = setInterval(() => {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.font = fs + 'px monospace';
-    for (let i = 0; i < drops.length; i++) {
+    ctx.fillStyle = '#ff4d6d';
+    ctx.font = fontSize + 'px monospace';
+
+    for(let i = 0; i < drops.length; i++) {
       const text = chars[Math.floor(Math.random() * chars.length)];
-      ctx.fillStyle = Math.random() > 0.9 ? '#fff' : '#ff4d6d';
-      ctx.fillText(text, i * fs, drops[i] * fs);
-      
-      if (drops[i] * fs > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
       drops[i]++;
     }
   }, 35);
 
-  // Countdown mula selepas 1 saat Matrix keluar
+  // Mula Countdown
   setTimeout(() => {
-    runCountdown(3, () => {
-      clearInterval(matrixInterval);
-      phase.style.display = 'none';
-      startEffect();
-      fadeInMusic();
-    });
+    const cd = document.getElementById('countdown-num');
+    cd.style.display = 'block';
+    let count = 3;
+    
+    const countIv = setInterval(() => {
+      cd.textContent = count;
+      cd.style.opacity = '1';
+      if(count <= 0) {
+        clearInterval(countIv);
+        clearInterval(matrixIv);
+        phase.style.display = 'none';
+        cd.style.display = 'none';
+        startFinalEffect();
+        playMusic();
+      }
+      count--;
+    }, 1000);
   }, 1000);
 }
 
-function runCountdown(n, callback) {
-  const el = document.getElementById('countdown-num');
-  let current = n;
-
-  function next() {
-    if (current < 1) {
-      el.style.opacity = '0';
-      callback();
-      return;
-    }
-    el.textContent = current;
-    el.style.opacity = '1';
-    el.style.transition = 'none';
-    el.style.transform = 'translate(-50%, -50%) scale(2)';
-    
-    setTimeout(() => {
-      el.style.transition = 'all 0.5s ease';
-      el.style.transform = 'translate(-50%, -50%) scale(1)';
-      el.style.opacity = '0';
-    }, 500);
-
-    current--;
-    setTimeout(next, 1000);
-  }
-  next();
-}
-
-function fadeInMusic() {
+function playMusic() {
   const music = document.getElementById('music');
-  music.volume = 0;
-  music.play().then(() => {
-    let vol = 0;
-    const interval = setInterval(() => {
-      if (vol < 1) { vol += 0.1; music.volume = Math.min(vol, 1); }
-      else clearInterval(interval);
-    }, 200);
-  }).catch(() => {});
+  music.play().catch(() => {
+    console.log("Audio play deferred");
+  });
 }
 
-function startEffect() {
-  const images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg'];
-  const wishes = ['Happy Birthday Sayang ❤️', 'I Love You So Much'];
-
-  // Gambar jatuh
+function startFinalEffect() {
+  // Hujan Love & Gambar & Tulisan
   setInterval(() => {
+    createFallingItem('text', wishes[Math.floor(Math.random() * wishes.length)]);
+    createFallingItem('emoji', heartEmojis[Math.floor(Math.random() * heartEmojis.length)]);
+    if(Math.random() > 0.5) createFallingItem('image', images[Math.floor(Math.random() * images.length)]);
+  }, 500);
+}
+
+function createFallingItem(type, content) {
+  const item = document.createElement('div');
+  item.className = 'falling-item';
+  item.style.left = Math.random() * 90 + '%';
+  item.style.animationDuration = (Math.random() * 3 + 4) + 's';
+
+  if(type === 'text') {
+    item.innerHTML = content;
+    item.style.color = '#ff4d6d';
+    item.style.fontFamily = 'Great Vibes, cursive';
+    item.style.fontSize = '24px';
+    item.style.whiteSpace = 'nowrap';
+  } else if(type === 'emoji') {
+    item.innerHTML = content;
+    item.style.fontSize = '20px';
+  } else {
     const img = document.createElement('img');
-    img.src = images[Math.floor(Math.random() * images.length)];
-    img.className = 'falling-img';
-    img.style.left = Math.random() * 90 + '%';
-    img.style.width = (Math.random() * 80 + 70) + 'px';
-    img.style.borderRadius = '15px';
-    img.style.animation = `fall ${Math.random() * 2 + 4}s linear forwards`;
-    document.body.appendChild(img);
-    setTimeout(() => img.remove(), 6000);
-  }, 600);
+    img.src = content;
+    img.style.width = '80px';
+    img.style.borderRadius = '10px';
+    item.appendChild(img);
+  }
 
-  // Tulisan jatuh
-  setInterval(() => {
-    const txt = document.createElement('div');
-    txt.className = 'falling-text';
-    txt.innerHTML = wishes[Math.floor(Math.random() * wishes.length)];
-    txt.style.left = Math.random() * 70 + 5 + '%';
-    txt.style.fontSize = (Math.random() * 10 + 25) + 'px';
-    txt.style.animation = `fallText ${Math.random() * 3 + 5}s linear forwards`;
-    document.body.appendChild(txt);
-    setTimeout(() => txt.remove(), 8000);
-  }, 1500);
-
-  // Love jatuh
-  setInterval(() => {
-    const heart = document.createElement('div');
-    heart.className = 'heart';
-    heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-    heart.style.left = Math.random() * 100 + '%';
-    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
-    heart.style.animation = `fall ${Math.random() * 2 + 3}s linear forwards`;
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-  }, 300);
+  document.body.appendChild(item);
+  setTimeout(() => item.remove(), 7000);
 }
 </script>
 </body>
