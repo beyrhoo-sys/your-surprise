@@ -92,8 +92,9 @@
     }
 
     .heart {
-      position: absolute;
-      animation: fall 5s linear forwards;
+     position: absolute;
+     animation: fall linear forwards;
+     will-change: transform;
     }
 
     @keyframes fall {
@@ -270,14 +271,29 @@ function startEffect() {
   },300);
 
   setInterval(()=>{
-    const h=document.createElement('div');
-    h.className='heart';
-    h.innerHTML=heartEmojis[Math.random()*heartEmojis.length|0];
-    h.style.left=Math.random()*100+'%';
-    h.style.fontSize=(Math.random()*20+10)+'px';
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+    // random position across full screen
+    h.style.left = Math.random() * window.innerWidth + 'px';
+    h.style.top = '-50px';
+
+    // random size
+    h.style.fontSize = (Math.random() * 20 + 12) + 'px';
+
+    // random fall speed
+    h.style.animationDuration = (Math.random() * 3 + 3) + 's';
+
+    // sway kiri kanan (wind effect)
+    h.style.transform = `translateX(${Math.random()*60 - 30}px)`;
+
+    // blur depth (fake 3D feel)
+    h.style.filter = `blur(${Math.random()*1.5}px)`;
+
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
-  },200);
+    setTimeout(()=>h.remove(),6000);
+  },180);
 
   setInterval(()=>{
     const t=document.createElement('div');
