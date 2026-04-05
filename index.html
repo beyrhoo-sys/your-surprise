@@ -72,15 +72,23 @@
       height: 100%;
     }
 
-    #countdown-num {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 120px;
-      color: #ff69b4;
-      text-shadow: 0 0 40px #ff1493;
-      opacity: 0;
-      z-index: 60;
+   #countdown-num {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    font-size: min(18vw, 160px); /* sikit kecil dari sekarang */
+    font-weight: 900;
+    color: #ff69b4;
+    text-shadow: 
+     0 0 20px #ff1493,
+     0 0 50px #ff69b4,
+     0 0 80px #ff1493;
+    font-family: 'Arial Black', sans-serif;
+    z-index: 60;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+}
     }
 
     .heart {
@@ -206,19 +214,23 @@ function runCountdown(n, cb) {
   const el = document.getElementById('countdown-num');
 
   function show() {
-    if (n < 1) return cb();
-    el.textContent = n--;
-    el.style.opacity = 1;
-    setTimeout(()=>{
-      el.style.opacity = 0;
-      setTimeout(show,300);
-    },700);
-  }
-  show();
+     if (n < 1) return cb();
+
+     el.textContent = n--;
+     el.style.opacity = '1';
+     el.style.transform = 'translate(-50%, -50%) scale(1.3)';
+
+    setTimeout(() => {
+     el.style.transform = 'translate(-50%, -50%) scale(0.7)';
+    el.style.opacity = '0';
+
+     setTimeout(show, 350);
+   }, 700);
+}
 }
 
 function fadeMusic() {
-  const m = document.getElementById('music');
+  const n = document.getElementById('music');
   m.volume = 0;
   m.play();
   let v=0;
