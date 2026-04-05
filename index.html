@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>For You ❤️</title>
+  <title>For my beautiful girl ❤️</title>
+
+  <!-- Romantic Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
-      background: black;
+      background: radial-gradient(circle at center, #1a001a, #000000);
       overflow: hidden;
       color: white;
-      font-family: Arial;
+      font-family: 'Poppins', sans-serif;
       text-align: center;
     }
 
@@ -19,27 +23,53 @@
       transition: opacity 1s;
     }
 
-    input {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
+    /* 💖 Title */
+    h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 48px;
+      color: #ff4d6d;
+      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      margin-bottom: 20px;
     }
 
-    button {
-      padding: 10px 15px;
+    /* 💎 Input aesthetic */
+    input {
+      padding: 12px 15px;
       font-size: 16px;
-      border-radius: 8px;
+      border-radius: 12px;
       border: none;
-      background: pink;
-      color: black;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #ff4d6d;
+    }
+
+    /* 💖 Button aesthetic */
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+      color: white;
       cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      transition: 0.3s;
     }
 
     button:hover {
-      background: hotpink;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 77, 109, 1);
     }
 
+    /* ❤️ Falling hearts */
     .heart {
       position: absolute;
       color: pink;
@@ -56,8 +86,8 @@
 <body>
 
 <div id="login">
-  <h2>Enter Password 💌</h2>
-  <input type="password" id="pass">
+  <h2>Only For Birthday Girl 💌</h2>
+  <input type="password" id="pass" placeholder="Enter password...">
   <br><br>
   <button onclick="check()">Open 💖</button>
 </div>
@@ -73,14 +103,12 @@ function check() {
   if(p === "111498") {
     let loginBox = document.getElementById("login");
 
-    // fade out login
     loginBox.style.opacity = "0";
     
     setTimeout(() => {
       loginBox.style.display = "none";
       startEffect();
 
-      // play music (with safety)
       let music = document.getElementById("music");
       music.volume = 0;
       music.play().then(() => {
@@ -96,7 +124,6 @@ function check() {
   }
 }
 
-// smooth volume naik
 function fadeInMusic(audio) {
   let vol = 0;
   let interval = setInterval(() => {
@@ -112,7 +139,6 @@ function fadeInMusic(audio) {
 function startEffect() {
   let images = ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
 
-  // Gambar jatuh
   setInterval(() => {
     let img = document.createElement("img");
     img.src = images[Math.floor(Math.random() * images.length)];
@@ -128,7 +154,6 @@ function startEffect() {
     setTimeout(() => img.remove(), 5000);
   }, 300);
 
-  // Heart jatuh
   setInterval(() => {
     let heart = document.createElement("div");
     heart.className = "heart";
