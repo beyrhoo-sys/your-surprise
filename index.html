@@ -64,7 +64,6 @@
       box-shadow: 0 0 25px rgba(255, 77, 109, 1);
     }
 
-    /* ── MATRIX ── */
     #matrix-phase {
       position: absolute;
       inset: 0;
@@ -94,7 +93,6 @@
       transition: transform 0.35s ease, opacity 0.35s ease;
     }
 
-    /* ── FALLING HEARTS ── */
     .heart {
       position: absolute;
       animation: fall 5s linear forwards;
@@ -104,6 +102,43 @@
     @keyframes fall {
       0%   { top: -10%; opacity: 1; }
       100% { top: 100%; opacity: 0; }
+    }
+
+    /* ── NEW: FLOATING WISH TEXT ── */
+    .wish {
+      position: absolute;
+      font-family: 'Great Vibes', cursive;
+      font-size: 28px;
+      color: #ff85c1;
+      text-shadow: 
+        0 0 5px #ff69b4,
+        0 0 15px #ff1493,
+        0 0 25px #ff69b4;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      animation: wishPop 4s ease-out forwards;
+    }
+
+    @keyframes wishPop {
+      0% {
+        transform: scale(0.3) translateY(20px);
+        opacity: 0;
+        filter: blur(4px);
+      }
+      20% {
+        transform: scale(1.2) translateY(0px);
+        opacity: 1;
+        filter: blur(0);
+      }
+      60% {
+        transform: scale(1) translateY(-20px);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0.9) translateY(-60px);
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -155,7 +190,6 @@ function fadeInMusic() {
   }).catch(() => {});
 }
 
-/* ── MATRIX ── */
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block';
@@ -170,7 +204,7 @@ function startMatrix() {
   resize();
   window.addEventListener('resize', resize);
 
-  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789♥♡★';
+  const chars = 'アイウエオ0123456789♥♡★';
   const fs = 14;
   let drops = Array.from({ length: Math.floor(canvas.width / fs) }, () => Math.random() * -60);
 
@@ -183,8 +217,7 @@ function startMatrix() {
 
     for (let i = 0; i < cols; i++) {
       const ch = chars[Math.floor(Math.random() * chars.length)];
-      const b  = Math.random();
-      ctx.fillStyle = b > 0.95 ? '#fff0f8' : b > 0.65 ? '#ff69b4' : '#aa1155';
+      ctx.fillStyle = '#ff69b4';
       ctx.font = fs + 'px monospace';
       ctx.fillText(ch, i * fs, drops[i] * fs);
       if (drops[i] * fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
@@ -192,7 +225,6 @@ function startMatrix() {
     }
   }, 33);
 
-  // countdown start after 1.5s
   setTimeout(() => {
     runCountdown(3, () => {
       clearInterval(matrixIv);
@@ -201,13 +233,12 @@ function startMatrix() {
         phase.style.display = 'none';
         phase.style.opacity = '1';
         startEffect();
-        fadeInMusic(); // music only starts here, lepas countdown habis
+        fadeInMusic();
       }, 1000);
     });
   }, 1500);
 }
 
-/* ── COUNTDOWN ── */
 function runCountdown(from, cb) {
   const el = document.getElementById('countdown-num');
   let n = from;
@@ -230,7 +261,6 @@ function runCountdown(from, cb) {
   next();
 }
 
-/* ── ORIGINAL startEffect ── */
 function startEffect() {
   const images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg'];
 
@@ -255,6 +285,20 @@ function startEffect() {
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 5000);
   }, 200);
+
+  // ── NEW: FLOATING TEXT ──
+  setInterval(() => {
+    const text = document.createElement('div');
+    text.className = 'wish';
+    text.innerHTML = 'happy birthday sayang ♥️';
+
+    text.style.left = Math.random() * 100 + '%';
+    text.style.top = (Math.random() * 80 + 10) + '%';
+    text.style.fontSize = (Math.random() * 20 + 20) + 'px';
+
+    document.body.appendChild(text);
+    setTimeout(() => text.remove(), 4000);
+  }, 500);
 }
 </script>
 </body>
