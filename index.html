@@ -183,22 +183,22 @@ function startMatrix() {
   const chars = 'アイウエオ0123456789♥♡★';
   const size = 14;
   const columns = canvas.width / size;
-  const drops = Array.from({length: columns}, () => 1);
+  const drops = Array.from({ length: columns }, () => Math.random() * -50);
 
   const interval = setInterval(() => {
     ctx.fillStyle = "rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.fillStyle = "#ff69b4";
+  const glow = Math.random();
+    ctx.fillStyle = glow > 0.95 ? "#fff0f8" : glow > 0.7 ? "#ff69b4" : "#aa1155";
     ctx.font = size + "px monospace";
 
     drops.forEach((y, i) => {
-      const text = chars[Math.random()*chars.length|0];
+  const text = chars[Math.random()*chars.length|0];
       ctx.fillText(text, i*size, y*size);
-      if (y*size > canvas.height && Math.random()>0.975) drops[i]=0;
-      drops[i]++;
-    });
-  }, 33);
+      if (y * size > canvas.height && Math.random() > 0.97) {
+  drops[i] = Math.random() * -20;
+}
 
   setTimeout(() => {
     runCountdown(3, () => {
