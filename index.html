@@ -65,6 +65,23 @@ function check() {
 }
 
 function startEffect() {
+  let images = ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
+
+  setInterval(() => {
+    let img = document.createElement("img");
+    img.src = images[Math.floor(Math.random() * images.length)];
+
+    img.style.position = "absolute";
+    img.style.top = "-100px";
+    img.style.left = Math.random() * 100 + "%";
+    img.style.width = (Math.random() * 80 + 50) + "px";
+    img.style.animation = "fall 5s linear";
+
+    document.body.appendChild(img);
+
+    setTimeout(() => img.remove(), 5000);
+  }, 300);
+}
   setInterval(() => {
     let heart = document.createElement("div");
     heart.className = "heart";
