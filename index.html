@@ -95,33 +95,23 @@
       transition: transform 0.35s ease, opacity 0.35s ease;
     }
 
-    /* ── FINAL MESSAGE ── */
-    #main-message {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(2.5rem, 8vw, 5rem);
-      color: #ff4d6d;
-      text-shadow: 0 0 20px rgba(255, 77, 109, 0.8);
-      opacity: 0;
-      z-index: 10;
-      pointer-events: none;
-      transition: opacity 2s ease-in;
-      width: 90%;
-    }
-
     /* ── FALLING ELEMENTS ── */
-    .heart, .falling-img {
+    .heart, .falling-img, .falling-text {
       position: absolute;
       pointer-events: none;
       z-index: 5;
     }
 
+    .falling-text {
+      font-family: 'Great Vibes', cursive;
+      color: #ff4d6d;
+      text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+      white-space: nowrap;
+    }
+
     @keyframes fall {
       0% { 
-        transform: translateY(-10vh) rotate(0deg); 
+        transform: translateY(-20vh) rotate(0deg); 
         opacity: 0; 
       }
       15% { opacity: 1; }
@@ -129,6 +119,13 @@
         transform: translateY(110vh) rotate(360deg); 
         opacity: 0; 
       }
+    }
+
+    /* Khusus untuk teks supaya dia tidak berpusing terlalu banyak */
+    @keyframes fallText {
+      0% { transform: translateY(-20vh); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translateY(110vh); opacity: 0; }
     }
   </style>
 </head>
@@ -146,8 +143,6 @@
 </div>
 
 <div id="countdown-num"></div>
-
-<div id="main-message">Happy Birthday, My Queen! 🎂✨</div>
 
 <audio id="music" loop>
   <source src="song.mp3" type="audio/mpeg">
@@ -179,13 +174,12 @@ function fadeInMusic() {
       if (vol < 1) { vol = Math.min(1, vol + 0.05); music.volume = vol; }
       else clearInterval(iv);
     }, 200);
-  }).catch((e) => console.log("Music play blocked or error:", e));
+  }).catch((e) => console.log("Music blocked:", e));
 }
 
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block';
-
   const canvas = document.getElementById('matrixCanvas');
   const ctx = canvas.getContext('2d');
 
@@ -196,17 +190,14 @@ function startMatrix() {
   resize();
   window.addEventListener('resize', resize);
 
-  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789♥♡★';
+  const chars = 'アイウエオカキクケコ0123456789♥♡★';
   const fs = 14;
   let drops = Array.from({ length: Math.floor(canvas.width / fs) }, () => Math.random() * -60);
 
   const matrixIv = setInterval(() => {
-    const cols = Math.floor(canvas.width / fs);
-    while (drops.length < cols) drops.push(0);
-
     ctx.fillStyle = 'rgba(0,0,0,0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+    const cols = drops.length;
     for (let i = 0; i < cols; i++) {
       const ch = chars[Math.floor(Math.random() * chars.length)];
       const b  = Math.random();
@@ -234,7 +225,6 @@ function startMatrix() {
 function runCountdown(from, cb) {
   const el = document.getElementById('countdown-num');
   let n = from;
-
   function showNum(num, done) {
     el.textContent = num;
     el.style.opacity = '1';
@@ -245,7 +235,6 @@ function runCountdown(from, cb) {
       setTimeout(done, 380);
     }, 720);
   }
-
   function next() {
     if (n < 1) { cb(); return; }
     showNum(n--, () => setTimeout(next, 100));
@@ -254,38 +243,39 @@ function runCountdown(from, cb) {
 }
 
 function startEffect() {
-  // Reveal the birthday text
-  const msg = document.getElementById('Happy Birthday Sayang');
-  msg.style.opacity = '1';
-
   const images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg'];
+  const wishes = ['Happy Birthday Sayang ❤️', 'I Love You So Much', 'You are Beautiful', 'Selamat Hari Jadi Sayang!'];
 
-  // Interval for Images
+  // Hujan Gambar
   setInterval(() => {
     const img = document.createElement('img');
     img.src = images[Math.floor(Math.random() * images.length)];
     img.className = 'falling-img';
     img.style.left = Math.random() * 100 + '%';
-    img.style.width = (Math.random() * 80 + 60) + 'px';
-    img.style.borderRadius = '12px';
-    img.style.boxShadow = '0 5px 15px rgba(255, 77, 109, 0.3)';
+    img.style.width = (Math.random() * 80 + 70) + 'px';
+    img.style.borderRadius = '15px';
     img.style.animation = `fall ${Math.random() * 2 + 4}s linear forwards`;
     document.body.appendChild(img);
     setTimeout(() => img.remove(), 6000);
-  }, 400);
+  }, 500);
 
-  // Interval for Hearts
+  // Hujan Tulisan "Happy Birthday Sayang"
+  setInterval(() => {
+    const txt = document.createElement('div');
+    txt.className = 'falling-text';
+    txt.innerHTML = wishes[Math.floor(Math.random() * wishes.length)];
+    txt.style.left = Math.random() * 60 + 10 + '%'; // Range 10% - 70% supaya tak potong tepi
+    txt.style.fontSize = (Math.random() * 15 + 25) + 'px';
+    txt.style.animation = `fallText ${Math.random() * 3 + 5}s linear forwards`;
+    document.body.appendChild(txt);
+    setTimeout(() => txt.remove(), 8000);
+  }, 1200);
+
+  // Hujan Emoji Love
   setInterval(() => {
     const heart = document.createElement('div');
     heart.className = 'heart';
     heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
     heart.style.left = Math.random() * 100 + '%';
     heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-    heart.style.animation = `fall ${Math.random() * 2 + 3}s linear forwards`;
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-  }, 250);
-}
-</script>
-</body>
-</html>
+    heart
