@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>For You ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    #login {
+      position: absolute;
+      top: 40%;
+      width: 100%;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .heart {
+      position: absolute;
+      color: pink;
+      animation: fall 5s linear infinite;
+    }
+
+    @keyframes fall {
+      0% { top: -10%; }
+      100% { top: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="login">
+  <h2>Enter Password 💌</h2>
+  <input type="password" id="pass">
+  <button onclick="check()">Enter</button>
+</div>
+
+<audio id="music" src="your-song.mp3"></audio>
+
+<script>
+function check() {
+  let p = document.getElementById("pass").value;
+
+  if(p === "111498") {
+    document.getElementById("login").style.display = "none";
+    startEffect();
+    document.getElementById("music").play();
+  } else {
+    alert("Wrong password!");
+  }
+}
+
+function startEffect() {
+  setInterval(() => {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 5000);
+  }, 200);
+}
+</script>
+
+</body>
+</html>
