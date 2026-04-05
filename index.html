@@ -213,20 +213,27 @@ function startMatrix() {
 function runCountdown(n, cb) {
   const el = document.getElementById('countdown-num');
 
-  function show() {
-     if (n < 1) return cb();
-
-     el.textContent = n--;
-     el.style.opacity = '1';
-     el.style.transform = 'translate(-50%, -50%) scale(1.3)';
+  function showNum(num, done) {
+    el.textContent = num;
+    el.style.opacity = '1';
+    el.style.transform = 'translate(-50%, -50%) scale(1.3)';
 
     setTimeout(() => {
-     el.style.transform = 'translate(-50%, -50%) scale(0.7)';
-    el.style.opacity = '0';
+      el.style.transform = 'translate(-50%, -50%) scale(0.7)';
+      el.style.opacity = '0';
+      setTimeout(done, 380);
+    }, 700);
+  }
 
-     setTimeout(show, 350);
-   }, 700);
-}
+  function next() {
+    if (n < 1) {
+      cb();
+      return;
+    }
+    showNum(n--, () => setTimeout(next, 100));
+  }
+
+  next();
 }
 
 function fadeMusic() {
