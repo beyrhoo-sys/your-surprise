@@ -1,156 +1,160 @@
-<!DOCTYPE html>  <html>  
-<head>  
-  <title>For my beautiful girl ❤️</title>    <!-- Romantic Font -->    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">    <style>  
-    body {  
-      margin: 0;  
-      background: radial-gradient(circle at center, #1a001a, #000000);  
-      overflow: hidden;  
-      color: white;  
-      font-family: 'Poppins', sans-serif;  
-      text-align: center;  
-    }  
-  
-    #login {  
-      position: absolute;  
-      top: 40%;  
-      width: 100%;  
-      transition: opacity 1s;  
-    }  
-  
-    /* 💖 Title */  
-    h2 {  
-      font-family: 'Great Vibes', cursive;  
-      font-size: 48px;  
-      color: #ff4d6d;  
-      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);  
-      margin-bottom: 20px;  
-    }  
-  
-    /* 💎 Input aesthetic */  
-    input {  
-      padding: 12px 15px;  
-      font-size: 16px;  
-      border-radius: 12px;  
-      border: none;  
-      outline: none;  
-      background: rgba(255, 255, 255, 0.1);  
-      color: #ff4d6d; /* 💖 pink text */
-      text-shadow: 0 0 8px rgba(255, 77, 109, 0.8); /* ✨ glow effect */  
-      backdrop-filter: blur(10px);  
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);  
-      text-align: center;  
-      transition: 0.3s;  
-    }  
-  
-    input:focus {  
-      box-shadow: 0 0 15px #ff4d6d;  
-    }  
-  
-    /* 💖 Button aesthetic */  
-    button {  
-      padding: 12px 20px;  
-      font-size: 16px;  
-      border-radius: 12px;  
-      border: none;  
-      background: linear-gradient(45deg, #ff4d6d, #ff85a2);  
-      color: white;  
-      cursor: pointer;  
-      box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);  
-      transition: 0.3s;  
-    }  
-  
-    button:hover {  
-      transform: scale(1.05);  
-      box-shadow: 0 0 25px rgba(255, 77, 109, 1);  
-    }  
-  
-    /* ❤️ Falling hearts */  
-    .heart {  
-      position: absolute;  
-      color: pink;  
-      animation: fall 5s linear infinite;  
-    }  
-  
-    @keyframes fall {  
-      0% { top: -10%; opacity: 1; }  
-      100% { top: 100%; opacity: 0; }  
-    }  
-  </style>  </head>  <body>  <div id="login">  
-  <h2>Only For Birthday Girl 💌</h2>  
-  <input type="password" id="pass" placeholder="Enter password...">  
-  <br><br>  
-  <button onclick="check()">Open 💖</button>  
-</div>  <audio id="music" loop>  
-  <source src="song.mp3" type="audio/mpeg">  
-</audio>  <script>  
-function check() {  
-  let p = document.getElementById("pass").value;  
-  
-  if(p === "111498") {  
-    let loginBox = document.getElementById("login");  
-  
-    loginBox.style.opacity = "0";  
-      
-    setTimeout(() => {  
-      loginBox.style.display = "none";  
-      startEffect();  
-  
-      let music = document.getElementById("music");  
-      music.volume = 0;  
-      music.play().then(() => {  
-        fadeInMusic(music);  
-      }).catch(() => {  
-        console.log("Autoplay blocked");  
-      });  
-  
-    }, 1000);  
-  
-  } else {  
-    alert("Wrong password!");  
-  }  
-}  
-  
-function fadeInMusic(audio) {  
-  let vol = 0;  
-  let interval = setInterval(() => {  
-    if (vol < 1) {  
-      vol += 0.05;  
-      audio.volume = vol;  
-    } else {  
-      clearInterval(interval);  
-    }  
-  }, 200);  
-}  
-  
-function startEffect() {  
-  let images = ["pic1.jpg", "pic2.jpg", "pic3.jpg"];  
-  
-  setInterval(() => {  
-    let img = document.createElement("img");  
-    img.src = images[Math.floor(Math.random() * images.length)];  
-  
-    img.style.position = "absolute";  
-    img.style.top = "-100px";  
-    img.style.left = Math.random() * 100 + "%";  
-    img.style.width = (Math.random() * 80 + 50) + "px";  
-    img.style.animation = "fall 5s linear";  
-  
-    document.body.appendChild(img);  
-  
-    setTimeout(() => img.remove(), 5000);  
-  }, 300);  
-  
-  setInterval(() => {  
-    let heart = document.createElement("div");  
-    heart.className = "heart";  
-    heart.innerHTML = "❤️";  
-    heart.style.left = Math.random() * 100 + "%";  
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";  
-  
-    document.body.appendChild(heart);  
-  
-    setTimeout(() => heart.remove(), 5000);  
-  }, 200);  
-}  
-</script>  </body>  
+<!DOCTYPE html>
+<html>
+<head>
+  <title>For my beautiful girl ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #1a001a, #000000);
+      overflow: hidden;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+    }
+
+    #login {
+      position: absolute;
+      top: 40%;
+      width: 100%;
+      transition: opacity 1s;
+    }
+
+    h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 48px;
+      color: #ff4d6d;
+      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ff4d6d;
+      text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #ff4d6d;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(45deg, #ff4d6d, #ff85a2);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 77, 109, 1);
+    }
+
+    .heart {
+      position: absolute;
+      animation: fall 5s linear infinite;
+    }
+
+    @keyframes fall {
+      0% { top: -10%; opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Only For Birthday Girl 💌</h2>
+  <input type="password" id="pass" placeholder="Enter password...">
+  <br><br>
+  <button onclick="check()">Open 💖</button>
+</div>
+
+<audio id="music" loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function check() {
+  let p = document.getElementById("pass").value;
+
+  if (p === "111498") {
+    let loginBox = document.getElementById("login");
+    loginBox.style.opacity = "0";
+
+    setTimeout(() => {
+      loginBox.style.display = "none";
+      startEffect();
+
+      let music = document.getElementById("music");
+      music.volume = 0;
+      music.play().then(() => {
+        fadeInMusic(music);
+      }).catch(() => {
+        console.log("Autoplay blocked");
+      });
+    }, 1000);
+
+  } else {
+    alert("Wrong password!");
+  }
+}
+
+function fadeInMusic(audio) {
+  let vol = 0;
+  let interval = setInterval(() => {
+    if (vol < 1) {
+      vol += 0.05;
+      audio.volume = vol;
+    } else {
+      clearInterval(interval);
+    }
+  }, 200);
+}
+
+function startEffect() {
+  let images = ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
+
+  setInterval(() => {
+    let img = document.createElement("img");
+    img.src = images[Math.floor(Math.random() * images.length)];
+    img.style.position = "absolute";
+    img.style.top = "-100px";
+    img.style.left = Math.random() * 100 + "%";
+    img.style.width = (Math.random() * 80 + 50) + "px";
+    img.style.animation = "fall 5s linear";
+    document.body.appendChild(img);
+    setTimeout(() => img.remove(), 5000);
+  }, 300);
+
+  setInterval(() => {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+
+    // 💖 Random pilih dari 4 emoji
+    const heartEmojis = ["❤️", "💓", "💖", "💘"];
+    heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+  }, 200);
+}
+</script>
+</body>
 </html>
