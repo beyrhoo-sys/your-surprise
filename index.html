@@ -4,20 +4,25 @@
   <title>For my beautiful girl ❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      margin: 0;
       background: radial-gradient(circle at center, #1a001a, #000000);
       overflow: hidden;
       color: white;
       font-family: 'Poppins', sans-serif;
       text-align: center;
+      width: 100vw;
+      height: 100vh;
     }
 
+    /* ───── LOGIN ───── */
     #login {
       position: absolute;
       top: 40%;
       width: 100%;
       transition: opacity 1s;
+      z-index: 100;
     }
 
     h2 {
@@ -64,19 +69,199 @@
       box-shadow: 0 0 25px rgba(255, 77, 109, 1);
     }
 
+    /* ───── MATRIX ───── */
+    #matrix-phase {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      transition: opacity 1.2s ease;
+    }
+
+    #matrix-phase.active { display: block; }
+
+    canvas#matrixCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #countdown-num {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      font-size: min(22vw, 200px);
+      font-weight: 900;
+      color: #ff69b4;
+      text-shadow: 0 0 40px #ff1493, 0 0 100px #ff69b4, 0 0 160px rgba(255,20,147,0.4);
+      font-family: 'Arial Black', 'Poppins', sans-serif;
+      z-index: 60;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    /* ───── GALLERY ───── */
+    #gallery-phase {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, #0d001a 0%, #000000 100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 1.2s ease;
+    }
+
+    #gallery-phase.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 65%, rgba(255,180,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 80%, rgba(255,100,200,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 45%, rgba(255,255,255,0.3) 0%, transparent 100%);
+      background-size: 180px 180px, 250px 250px, 130px 130px, 220px 220px, 160px 160px;
+      animation: twinkle 5s infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.4; }
+      to   { opacity: 1; }
+    }
+
+    #gallery-caption {
+      position: absolute;
+      top: 12%;
+      width: 100%;
+      text-align: center;
+      color: rgba(255,182,193,0.85);
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(20px, 4vw, 32px);
+      letter-spacing: 2px;
+      pointer-events: none;
+      animation: fadeCaption 3s ease-in-out infinite alternate;
+      z-index: 5;
+    }
+
+    @keyframes fadeCaption {
+      from { opacity: 0.5; }
+      to   { opacity: 1; }
+    }
+
+    #scene-wrapper {
+      position: absolute;
+      inset: 0;
+      perspective: 900px;
+      overflow: hidden;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+    }
+
+    #scene-wrapper:active { cursor: grabbing; }
+
+    #photo-track {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 0 60px;
+      height: 100%;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .photo-card {
+      flex-shrink: 0;
+      width: min(200px, 42vw);
+      height: min(260px, 52vw);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(255,105,180,0.35);
+      box-shadow: 0 0 20px rgba(255,20,147,0.25), 0 0 60px rgba(255,20,147,0.08);
+      background: linear-gradient(135deg, #1a0020, #2d0030);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .photo-card:hover {
+      transform: scale(1.06) translateZ(25px);
+      box-shadow: 0 0 40px rgba(255,20,147,0.55), 0 0 100px rgba(255,20,147,0.18);
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-placeholder {
+      color: rgba(255,105,180,0.5);
+      font-size: 14px;
+      text-align: center;
+      padding: 12px;
+      font-family: 'Great Vibes', cursive;
+      font-size: 22px;
+      line-height: 1.8;
+    }
+
+    .heart-badge {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 18px;
+      animation: floatHeart 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatHeart {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+      50%       { transform: translateY(-8px) scale(1.2); opacity: 1; }
+    }
+
+    #gallery-hint {
+      position: absolute;
+      bottom: 18px;
+      width: 100%;
+      text-align: center;
+      color: rgba(255,105,180,0.45);
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 5;
+      letter-spacing: 1px;
+    }
+
+    /* ───── FALLING HEARTS (after gallery unlocked) ───── */
     .heart {
       position: absolute;
-      animation: fall 5s linear infinite;
+      animation: fall 5s linear forwards;
+      pointer-events: none;
+      z-index: 3;
     }
 
     @keyframes fall {
-      0% { top: -10%; opacity: 1; }
-      100% { top: 100%; opacity: 0; }
+      0%   { top: -10%; opacity: 1; }
+      100% { top: 105%; opacity: 0; }
     }
   </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
   <input type="password" id="pass" placeholder="Enter password...">
@@ -84,75 +269,292 @@
   <button onclick="check()">Open 💖</button>
 </div>
 
+<!-- MATRIX CANVAS -->
+<div id="matrix-phase">
+  <canvas id="matrixCanvas"></canvas>
+</div>
+
+<!-- COUNTDOWN NUMBER -->
+<div id="countdown-num"></div>
+
+<!-- GALLERY -->
+<div id="gallery-phase">
+  <div class="stars"></div>
+  <p id="gallery-caption">✨ happy birthday, sayang ✨</p>
+  <div id="scene-wrapper">
+    <div id="photo-track"></div>
+  </div>
+  <p id="gallery-hint">drag to explore &nbsp;•&nbsp; pinch to zoom</p>
+</div>
+
+<!-- MUSIC -->
 <audio id="music" loop>
   <source src="song.mp3" type="audio/mpeg">
 </audio>
 
 <script>
+/* ══════════════════════════════════════════
+   PASSWORD CHECK
+══════════════════════════════════════════ */
 function check() {
-  let p = document.getElementById("pass").value;
-
-  if (p === "111498") {
-    let loginBox = document.getElementById("login");
-    loginBox.style.opacity = "0";
-
+  const p = document.getElementById('pass').value;
+  if (p === '111498') {
+    const loginBox = document.getElementById('login');
+    loginBox.style.opacity = '0';
     setTimeout(() => {
-      loginBox.style.display = "none";
-      startEffect();
-
-      let music = document.getElementById("music");
+      loginBox.style.display = 'none';
+      startMatrix();
+      const music = document.getElementById('music');
       music.volume = 0;
-      music.play().then(() => {
-        fadeInMusic(music);
-      }).catch(() => {
-        console.log("Autoplay blocked");
-      });
+      music.play().then(() => fadeInMusic(music)).catch(() => {});
     }, 1000);
-
   } else {
-    alert("Wrong password!");
+    alert('Wrong password!');
   }
 }
 
 function fadeInMusic(audio) {
   let vol = 0;
-  let interval = setInterval(() => {
-    if (vol < 1) {
-      vol += 0.05;
-      audio.volume = vol;
-    } else {
-      clearInterval(interval);
-    }
+  const iv = setInterval(() => {
+    if (vol < 1) { vol = Math.min(1, vol + 0.05); audio.volume = vol; }
+    else clearInterval(iv);
   }, 200);
 }
 
-function startEffect() {
-  let images = ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
+/* ══════════════════════════════════════════
+   MATRIX RAIN
+══════════════════════════════════════════ */
+function startMatrix() {
+  const phase = document.getElementById('matrix-phase');
+  phase.classList.add('active');
 
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789♥♡★';
+  const fs = 14;
+  let cols = Math.floor(canvas.width / fs);
+  let drops = Array.from({ length: cols }, () => Math.random() * -60);
+
+  const matrixIv = setInterval(() => {
+    cols = Math.floor(canvas.width / fs);
+    while (drops.length < cols) drops.push(0);
+
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < cols; i++) {
+      const ch = chars[Math.floor(Math.random() * chars.length)];
+      const b  = Math.random();
+      ctx.fillStyle = b > 0.95 ? '#fff0f8' : b > 0.65 ? '#ff69b4' : '#aa1155';
+      ctx.font = fs + 'px monospace';
+      ctx.fillText(ch, i * fs, drops[i] * fs);
+      if (drops[i] * fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }, 33);
+
+  /* countdown after 1.5s */
+  setTimeout(() => runCountdown(3, () => {
+    clearInterval(matrixIv);
+    phase.style.opacity = '0';
+    setTimeout(() => {
+      phase.classList.remove('active');
+      phase.style.display = 'none';
+      launchGallery();
+      startFallingHearts();
+    }, 1200);
+  }), 1500);
+}
+
+/* ══════════════════════════════════════════
+   COUNTDOWN
+══════════════════════════════════════════ */
+function runCountdown(from, cb) {
+  const el = document.getElementById('countdown-num');
+  let n = from;
+
+  function show(num, done) {
+    el.textContent = num;
+    el.style.opacity = '1';
+    el.style.transform = 'translate(-50%, -50%) scale(1.3)';
+    setTimeout(() => {
+      el.style.transform = 'translate(-50%, -50%) scale(0.7)';
+      el.style.opacity   = '0';
+      setTimeout(done, 380);
+    }, 720);
+  }
+
+  function next() {
+    if (n < 1) { cb(); return; }
+    show(n--, () => setTimeout(next, 100));
+  }
+  next();
+}
+
+/* ══════════════════════════════════════════
+   3D GALLERY
+══════════════════════════════════════════ */
+const heartEmojis = ['💓','💖','💘','❤️','💗','💝'];
+const photoFiles  = ['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg','pic5.jpg'];
+
+function launchGallery() {
+  const gallery = document.getElementById('gallery-phase');
+  gallery.classList.add('active');
+  buildPhotoTrack(photoFiles);
+  initDrag();
+}
+
+function buildPhotoTrack(srcs) {
+  const track = document.getElementById('photo-track');
+  track.innerHTML = '';
+
+  srcs.forEach((src, i) => {
+    const card = document.createElement('div');
+    card.className = 'photo-card';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'memory ' + (i + 1);
+    img.onerror = () => {
+      img.remove();
+      const ph = document.createElement('div');
+      ph.className = 'photo-placeholder';
+      ph.innerHTML = heartEmojis[i % heartEmojis.length] + '<br>memory ' + (i + 1);
+      card.appendChild(ph);
+    };
+    card.appendChild(img);
+
+    const badge = document.createElement('div');
+    badge.className = 'heart-badge';
+    badge.textContent = heartEmojis[i % heartEmojis.length];
+    badge.style.animationDelay = (Math.random() * 2) + 's';
+    card.appendChild(badge);
+
+    track.appendChild(card);
+  });
+}
+
+/* drag + momentum + pinch */
+function initDrag() {
+  const wrapper = document.getElementById('scene-wrapper');
+  const track   = document.getElementById('photo-track');
+
+  let scrollX = 0, velX = 0, lastX = 0, isDragging = false;
+  let scale = 1, lastPinchDist = 0;
+  let rafId = null;
+
+  const maxScroll = () => Math.max(0, track.scrollWidth - wrapper.clientWidth + 120);
+
+  function applyTransform(animated) {
+    track.style.transition = animated ? 'transform 0.05s linear' : 'none';
+    track.style.transform  = `translateX(${scrollX}px) scale(${scale})`;
+  }
+
+  function momentum() {
+    if (Math.abs(velX) < 0.4) return;
+    velX   *= 0.93;
+    scrollX = Math.max(-maxScroll(), Math.min(0, scrollX + velX));
+    applyTransform(false);
+    rafId = requestAnimationFrame(momentum);
+  }
+
+  /* mouse */
+  wrapper.addEventListener('mousedown', e => {
+    cancelAnimationFrame(rafId);
+    isDragging = true; lastX = e.clientX; velX = 0;
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    velX    = e.clientX - lastX;
+    lastX   = e.clientX;
+    scrollX = Math.max(-maxScroll(), Math.min(0, scrollX + velX));
+    applyTransform(false);
+  });
+  window.addEventListener('mouseup', () => { isDragging = false; momentum(); });
+
+  /* touch */
+  wrapper.addEventListener('touchstart', e => {
+    cancelAnimationFrame(rafId);
+    if (e.touches.length === 1) {
+      isDragging = true; lastX = e.touches[0].clientX; velX = 0;
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      lastPinchDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+    }
+  }, { passive: true });
+
+  wrapper.addEventListener('touchmove', e => {
+    if (e.touches.length === 1 && isDragging) {
+      velX    = e.touches[0].clientX - lastX;
+      lastX   = e.touches[0].clientX;
+      scrollX = Math.max(-maxScroll(), Math.min(0, scrollX + velX));
+      applyTransform(false);
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      scale = Math.max(0.5, Math.min(2.5, scale * (dist / lastPinchDist)));
+      lastPinchDist = dist;
+      applyTransform(false);
+    }
+  }, { passive: true });
+
+  wrapper.addEventListener('touchend', () => { isDragging = false; momentum(); });
+
+  /* wheel */
+  wrapper.addEventListener('wheel', e => {
+    e.preventDefault();
+    cancelAnimationFrame(rafId);
+    scrollX = Math.max(-maxScroll(), Math.min(0, scrollX - e.deltaY * 0.8));
+    applyTransform(false);
+  }, { passive: false });
+}
+
+/* ══════════════════════════════════════════
+   FALLING HEARTS + IMAGES
+══════════════════════════════════════════ */
+function startFallingHearts() {
+  const images = ['pic1.jpg','pic2.jpg','pic3.jpg'];
+
+  /* falling photos */
   setInterval(() => {
-    let img = document.createElement("img");
+    const img = document.createElement('img');
     img.src = images[Math.floor(Math.random() * images.length)];
-    img.style.position = "absolute";
-    img.style.top = "-100px";
-    img.style.left = Math.random() * 100 + "%";
-    img.style.width = (Math.random() * 80 + 50) + "px";
-    img.style.animation = "fall 5s linear";
+    img.style.cssText = `
+      position:absolute; top:-100px; z-index:2;
+      left:${Math.random() * 100}%;
+      width:${Math.random() * 80 + 50}px;
+      border-radius:10px;
+      animation: fall 5s linear forwards;
+      opacity:0.6;
+    `;
     document.body.appendChild(img);
-    setTimeout(() => img.remove(), 5000);
-  }, 300);
+    setTimeout(() => img.remove(), 5100);
+  }, 400);
 
+  /* falling hearts */
   setInterval(() => {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-
-    // 💖 Random pilih dari 4 emoji
-    const heartEmojis = ["❤️", "💓", "💖", "💘"];
-    heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-
-    heart.style.left = Math.random() * 100 + "%";
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    heart.style.cssText += `
+      left:${Math.random() * 100}%;
+      font-size:${Math.random() * 20 + 10}px;
+    `;
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
+    setTimeout(() => heart.remove(), 5100);
   }, 200);
 }
 </script>
