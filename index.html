@@ -17,6 +17,7 @@
       position: absolute;
       top: 40%;
       width: 100%;
+      z-index: 100;
       transition: opacity 1s;
     }
 
@@ -94,16 +95,40 @@
       transition: transform 0.35s ease, opacity 0.35s ease;
     }
 
-    /* ── FALLING HEARTS ── */
-    .heart {
+    /* ── FINAL MESSAGE ── */
+    #main-message {
       position: absolute;
-      animation: fall 5s linear forwards;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      color: #ff4d6d;
+      text-shadow: 0 0 20px rgba(255, 77, 109, 0.8);
+      opacity: 0;
+      z-index: 10;
       pointer-events: none;
+      transition: opacity 2s ease-in;
+      width: 90%;
+    }
+
+    /* ── FALLING ELEMENTS ── */
+    .heart, .falling-img {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
     }
 
     @keyframes fall {
-      0%   { top: -10%; opacity: 1; }
-      100% { top: 100%; opacity: 0; }
+      0% { 
+        transform: translateY(-10vh) rotate(0deg); 
+        opacity: 0; 
+      }
+      15% { opacity: 1; }
+      100% { 
+        transform: translateY(110vh) rotate(360deg); 
+        opacity: 0; 
+      }
     }
   </style>
 </head>
@@ -122,12 +147,14 @@
 
 <div id="countdown-num"></div>
 
+<div id="main-message">Happy Birthday, My Queen! 🎂✨</div>
+
 <audio id="music" loop>
   <source src="song.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const heartEmojis = ['❤️','💓','💖','💘'];
+const heartEmojis = ['❤️','💓','💖','💘', '✨'];
 
 function check() {
   const p = document.getElementById('pass').value;
@@ -152,10 +179,9 @@ function fadeInMusic() {
       if (vol < 1) { vol = Math.min(1, vol + 0.05); music.volume = vol; }
       else clearInterval(iv);
     }, 200);
-  }).catch(() => {});
+  }).catch((e) => console.log("Music play blocked or error:", e));
 }
 
-/* ── MATRIX ── */
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block';
@@ -192,22 +218,19 @@ function startMatrix() {
     }
   }, 33);
 
-  // countdown start after 1.5s
   setTimeout(() => {
     runCountdown(3, () => {
       clearInterval(matrixIv);
       phase.style.opacity = '0';
       setTimeout(() => {
         phase.style.display = 'none';
-        phase.style.opacity = '1';
         startEffect();
-        fadeInMusic(); // music only starts here, lepas countdown habis
+        fadeInMusic();
       }, 1000);
     });
   }, 1500);
 }
 
-/* ── COUNTDOWN ── */
 function runCountdown(from, cb) {
   const el = document.getElementById('countdown-num');
   let n = from;
@@ -230,31 +253,38 @@ function runCountdown(from, cb) {
   next();
 }
 
-/* ── ORIGINAL startEffect ── */
 function startEffect() {
+  // Reveal the birthday text
+  const msg = document.getElementById('Happy Birthday Sayang');
+  msg.style.opacity = '1';
+
   const images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg'];
 
+  // Interval for Images
   setInterval(() => {
     const img = document.createElement('img');
     img.src = images[Math.floor(Math.random() * images.length)];
-    img.style.position = 'absolute';
-    img.style.top = '-100px';
+    img.className = 'falling-img';
     img.style.left = Math.random() * 100 + '%';
-    img.style.width = (Math.random() * 80 + 50) + 'px';
-    img.style.animation = 'fall 5s linear';
+    img.style.width = (Math.random() * 80 + 60) + 'px';
+    img.style.borderRadius = '12px';
+    img.style.boxShadow = '0 5px 15px rgba(255, 77, 109, 0.3)';
+    img.style.animation = `fall ${Math.random() * 2 + 4}s linear forwards`;
     document.body.appendChild(img);
-    setTimeout(() => img.remove(), 5000);
-  }, 300);
+    setTimeout(() => img.remove(), 6000);
+  }, 400);
 
+  // Interval for Hearts
   setInterval(() => {
     const heart = document.createElement('div');
     heart.className = 'heart';
     heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
     heart.style.left = Math.random() * 100 + '%';
-    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+    heart.style.animation = `fall ${Math.random() * 2 + 3}s linear forwards`;
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 5000);
-  }, 200);
+  }, 250);
 }
 </script>
 </body>
