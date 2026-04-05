@@ -286,7 +286,7 @@ function startEffect() {
     h.style.animationDuration = (Math.random() * 3 + 3) + 's';
 
     // sway kiri kanan (wind effect)
-    h.style.transform = `translateX(${Math.random()*60 - 30}px)`;
+    h.style.transform = 'translateX(' + (Math.random()*60 - 30) + 'px)';
 
     // blur depth (fake 3D feel)
     h.style.filter = `blur(${Math.random()*1.5}px)`;
