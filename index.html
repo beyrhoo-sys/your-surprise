@@ -277,28 +277,14 @@ function startEffect() {
     setTimeout(()=>img.remove(),5000);
   },300);
 
-  setInterval(()=>{
-    const h = document.createElement('div');
-    h.className = 'heart';
-    h.innerHTML = 
-    heartEmojis[Math.floor(Math.random() * 
-    heartEmojis.length)];
-
-    // random kiri kanan
-    h.style.setProperty('--rand', Math.random());
-
-    // position
-    h.style.left = Math.random() * window.innerWidth + 'px';
-    h.style.top = Math.random() * -200 + 'px';
-
-    // random size
-    h.style.fontSize = (Math.random() * 20 + 12) + 'px';
-
-    // random fall speed
-    h.style.animationDuration = (Math.random() * 3 + 3) + 's';
-
-    // blur depth (fake 3D feel)
-    h.style.filter = `blur(${Math.random()*1.5}px)`;
+  
+    // Heart jatuh
+  setInterval(() => {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
 
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),6000);
