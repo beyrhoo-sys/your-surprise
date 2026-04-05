@@ -6,7 +6,7 @@
   <style>
     body {
       margin: 0;
-      background: radial-gradient(circle at center, #1a001a, #000000);
+      background: #000;
       overflow: hidden;
       color: white;
       font-family: 'Poppins', sans-serif;
@@ -17,8 +17,8 @@
       position: absolute;
       top: 40%;
       width: 100%;
-      z-index: 100;
-      transition: opacity 1s;
+      z-index: 1000;
+      display: block;
     }
 
     h2 {
@@ -26,7 +26,6 @@
       font-size: 48px;
       color: #ff4d6d;
       text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
-      margin-bottom: 20px;
     }
 
     input {
@@ -34,18 +33,11 @@
       font-size: 16px;
       border-radius: 12px;
       border: none;
-      outline: none;
       background: rgba(255, 255, 255, 0.1);
       color: #ff4d6d;
-      text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
+      text-align: center;
       backdrop-filter: blur(10px);
       box-shadow: 0 0 10px rgba(255,255,255,0.2);
-      text-align: center;
-      transition: 0.3s;
-    }
-
-    input:focus {
-      box-shadow: 0 0 15px #ff4d6d;
     }
 
     button {
@@ -56,22 +48,15 @@
       background: linear-gradient(45deg, #ff4d6d, #ff85a2);
       color: white;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
-      transition: 0.3s;
+      margin-top: 20px;
     }
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(255, 77, 109, 1);
-    }
-
-    /* ── MATRIX ── */
+    /* ── MATRIX & ELEMENTS ── */
     #matrix-phase {
-      position: absolute;
+      position: fixed;
       inset: 0;
       display: none;
       z-index: 50;
-      transition: opacity 1s ease;
     }
 
     canvas#matrixCanvas {
@@ -81,21 +66,17 @@
     }
 
     #countdown-num {
-      position: absolute;
+      position: fixed;
       top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      font-size: min(22vw, 200px);
+      transform: translate(-50%, -50%);
+      font-size: 150px;
       font-weight: 900;
       color: #ff69b4;
-      text-shadow: 0 0 40px #ff1493, 0 0 100px #ff69b4;
-      font-family: 'Arial Black', sans-serif;
       z-index: 60;
       opacity: 0;
       pointer-events: none;
-      transition: transform 0.35s ease, opacity 0.35s ease;
     }
 
-    /* ── FALLING ELEMENTS ── */
     .heart, .falling-img, .falling-text {
       position: absolute;
       pointer-events: none;
@@ -110,18 +91,11 @@
     }
 
     @keyframes fall {
-      0% { 
-        transform: translateY(-20vh) rotate(0deg); 
-        opacity: 0; 
-      }
+      0% { transform: translateY(-20vh) rotate(0deg); opacity: 0; }
       15% { opacity: 1; }
-      100% { 
-        transform: translateY(110vh) rotate(360deg); 
-        opacity: 0; 
-      }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
     }
 
-    /* Khusus untuk teks supaya dia tidak berpusing terlalu banyak */
     @keyframes fallText {
       0% { transform: translateY(-20vh); opacity: 0; }
       15% { opacity: 1; }
@@ -134,7 +108,7 @@
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
   <input type="password" id="pass" placeholder="Enter password...">
-  <br><br>
+  <br>
   <button onclick="check()">Open 💖</button>
 </div>
 
@@ -154,15 +128,85 @@ const heartEmojis = ['❤️','💓','💖','💘', '✨'];
 function check() {
   const p = document.getElementById('pass').value;
   if (p === '111498') {
-    const loginBox = document.getElementById('login');
-    loginBox.style.opacity = '0';
-    setTimeout(() => {
-      loginBox.style.display = 'none';
-      startMatrix();
-    }, 1000);
+    // Sembunyikan login terus
+    document.getElementById('login').style.display = 'none';
+    startMatrix();
   } else {
-    alert('Wrong password!');
+    alert('Wrong password! Cuba lagi sayang.');
   }
+}
+
+function startMatrix() {
+  const phase = document.getElementById('matrix-phase');
+  phase.style.display = 'block';
+
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const chars = 'アイウエオカキクケコ0123456789♥♡★';
+  const fs = 16;
+  let drops = Array.from({ length: Math.floor(window.innerWidth / fs) }, () => Math.random() * -100);
+
+  const matrixInterval = setInterval(() => {
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.font = fs + 'px monospace';
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillStyle = Math.random() > 0.9 ? '#fff' : '#ff4d6d';
+      ctx.fillText(text, i * fs, drops[i] * fs);
+      
+      if (drops[i] * fs > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }, 35);
+
+  // Countdown mula selepas 1 saat Matrix keluar
+  setTimeout(() => {
+    runCountdown(3, () => {
+      clearInterval(matrixInterval);
+      phase.style.display = 'none';
+      startEffect();
+      fadeInMusic();
+    });
+  }, 1000);
+}
+
+function runCountdown(n, callback) {
+  const el = document.getElementById('countdown-num');
+  let current = n;
+
+  function next() {
+    if (current < 1) {
+      el.style.opacity = '0';
+      callback();
+      return;
+    }
+    el.textContent = current;
+    el.style.opacity = '1';
+    el.style.transition = 'none';
+    el.style.transform = 'translate(-50%, -50%) scale(2)';
+    
+    setTimeout(() => {
+      el.style.transition = 'all 0.5s ease';
+      el.style.transform = 'translate(-50%, -50%) scale(1)';
+      el.style.opacity = '0';
+    }, 500);
+
+    current--;
+    setTimeout(next, 1000);
+  }
+  next();
 }
 
 function fadeInMusic() {
@@ -170,112 +214,54 @@ function fadeInMusic() {
   music.volume = 0;
   music.play().then(() => {
     let vol = 0;
-    const iv = setInterval(() => {
-      if (vol < 1) { vol = Math.min(1, vol + 0.05); music.volume = vol; }
-      else clearInterval(iv);
+    const interval = setInterval(() => {
+      if (vol < 1) { vol += 0.1; music.volume = Math.min(vol, 1); }
+      else clearInterval(interval);
     }, 200);
-  }).catch((e) => console.log("Music blocked:", e));
-}
-
-function startMatrix() {
-  const phase = document.getElementById('matrix-phase');
-  phase.style.display = 'block';
-  const canvas = document.getElementById('matrixCanvas');
-  const ctx = canvas.getContext('2d');
-
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  const chars = 'アイウエオカキクケコ0123456789♥♡★';
-  const fs = 14;
-  let drops = Array.from({ length: Math.floor(canvas.width / fs) }, () => Math.random() * -60);
-
-  const matrixIv = setInterval(() => {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    const cols = drops.length;
-    for (let i = 0; i < cols; i++) {
-      const ch = chars[Math.floor(Math.random() * chars.length)];
-      const b  = Math.random();
-      ctx.fillStyle = b > 0.95 ? '#fff0f8' : b > 0.65 ? '#ff69b4' : '#aa1155';
-      ctx.font = fs + 'px monospace';
-      ctx.fillText(ch, i * fs, drops[i] * fs);
-      if (drops[i] * fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    }
-  }, 33);
-
-  setTimeout(() => {
-    runCountdown(3, () => {
-      clearInterval(matrixIv);
-      phase.style.opacity = '0';
-      setTimeout(() => {
-        phase.style.display = 'none';
-        startEffect();
-        fadeInMusic();
-      }, 1000);
-    });
-  }, 1500);
-}
-
-function runCountdown(from, cb) {
-  const el = document.getElementById('countdown-num');
-  let n = from;
-  function showNum(num, done) {
-    el.textContent = num;
-    el.style.opacity = '1';
-    el.style.transform = 'translate(-50%, -50%) scale(1.3)';
-    setTimeout(() => {
-      el.style.transform = 'translate(-50%, -50%) scale(0.7)';
-      el.style.opacity = '0';
-      setTimeout(done, 380);
-    }, 720);
-  }
-  function next() {
-    if (n < 1) { cb(); return; }
-    showNum(n--, () => setTimeout(next, 100));
-  }
-  next();
+  }).catch(() => {});
 }
 
 function startEffect() {
   const images = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg'];
-  const wishes = ['Happy Birthday Sayang ❤️', 'I Love You So Much', 'You are Beautiful', 'Selamat Hari Jadi Sayang!'];
+  const wishes = ['Happy Birthday Sayang ❤️', 'I Love You So Much'];
 
-  // Hujan Gambar
+  // Gambar jatuh
   setInterval(() => {
     const img = document.createElement('img');
     img.src = images[Math.floor(Math.random() * images.length)];
     img.className = 'falling-img';
-    img.style.left = Math.random() * 100 + '%';
+    img.style.left = Math.random() * 90 + '%';
     img.style.width = (Math.random() * 80 + 70) + 'px';
     img.style.borderRadius = '15px';
     img.style.animation = `fall ${Math.random() * 2 + 4}s linear forwards`;
     document.body.appendChild(img);
     setTimeout(() => img.remove(), 6000);
-  }, 500);
+  }, 600);
 
-  // Hujan Tulisan "Happy Birthday Sayang"
+  // Tulisan jatuh
   setInterval(() => {
     const txt = document.createElement('div');
     txt.className = 'falling-text';
     txt.innerHTML = wishes[Math.floor(Math.random() * wishes.length)];
-    txt.style.left = Math.random() * 60 + 10 + '%'; // Range 10% - 70% supaya tak potong tepi
-    txt.style.fontSize = (Math.random() * 15 + 25) + 'px';
+    txt.style.left = Math.random() * 70 + 5 + '%';
+    txt.style.fontSize = (Math.random() * 10 + 25) + 'px';
     txt.style.animation = `fallText ${Math.random() * 3 + 5}s linear forwards`;
     document.body.appendChild(txt);
     setTimeout(() => txt.remove(), 8000);
-  }, 1200);
+  }, 1500);
 
-  // Hujan Emoji Love
+  // Love jatuh
   setInterval(() => {
     const heart = document.createElement('div');
     heart.className = 'heart';
     heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
     heart.style.left = Math.random() * 100 + '%';
-    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-    heart
+    heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+    heart.style.animation = `fall ${Math.random() * 2 + 3}s linear forwards`;
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+  }, 300);
+}
+</script>
+</body>
+</html>
