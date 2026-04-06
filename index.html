@@ -244,6 +244,20 @@ const mat = new THREE.PointsMaterial({
 
 const galaxy = new THREE.Points(geo, mat);
 scene.add(galaxy);
+  
+/* 🔐 LOCK IMAGE CENTER */
+const lockTexture = new THREE.TextureLoader().load('lock.png');
+
+const lockMaterial = new THREE.MeshBasicMaterial({
+  map: lockTexture,
+  transparent: true
+});
+
+const lockGeometry = new THREE.PlaneGeometry(2.5, 2.5);
+const lockMesh = new THREE.Mesh(lockGeometry, lockMaterial);
+
+lockMesh.position.set(0, 0, 0);
+scene.add(lockMesh);
 
 /* ❤️ RANDOM IMAGE DALAM GALAXY */
 const loader = new THREE.TextureLoader();
@@ -293,11 +307,19 @@ const mouse = new THREE.Vector2();
   mouse.y = -(event.clientY / innerHeight) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
-  const hit = raycaster.intersectObjects(imageMeshes);
+  const hit = raycaster.intersectObjects([...imageMeshes, lockMesh]);
 
   if(hit.length > 0){
-    spawnLove(hit[0].object.position);
+
+  // 🔐 kalau klik lock → next
+  if(hit[0].object === lockMesh){
+    goNextPart2(); // function baru
+    return;
   }
+
+  // ❤️ klik gambar → love effect
+  spawnLove(hit[0].object.position);
+}
 });
   
 /* 💌 LOVE EFFECT (SPAWN BANYAK + FADE) */
@@ -350,6 +372,16 @@ function animate(){
 
   galaxy.rotation.y += 0.0008;
 
+  // 🔐 floating effect
+  lockMesh.position.y = Math.sin(Date.now() * 0.002) * 0.5;
+
+// 🔥 glow pulse
+  const scale = 1 + Math.sin(Date.now() * 0.003) * 0.1;
+  lockMesh.scale.set(scale, scale, scale);
+
+// sentiasa hadap camera
+  lockMesh.lookAt(camera.position);
+
   // AUTO ZOOM SLOW (PHONE FRIENDLY)
   if(camera.position.z > 10){
     camera.position.z -= 0.01;
@@ -363,6 +395,20 @@ window.addEventListener('resize', ()=>{
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+
+  function goNextPart2(){
+
+  // fade keluar galaxy
+  document.querySelector('.webgl').style.opacity = 0;
+
+  setTimeout(()=>{
+    alert("Unlocked ❤️");
+
+    // nanti kau boleh tukar:
+    // window.location.href = "next.html";
+
+  },800);
+}
 });
 </script>
 
