@@ -154,7 +154,6 @@ button {
 <!-- 🌌 GALAXY FIXED -->
 <script type="module">
 import * as THREE from 'https://unpkg.com/three@0.150.0/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.150.0/examples/jsm/controls/OrbitControls.js';
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
@@ -164,7 +163,7 @@ const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100)
 camera.position.set(0,5,20);
 scene.add(camera);
 
-/* RENDERER 🔥 FIX */
+/* RENDERER */
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
   alpha: false
@@ -172,19 +171,12 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(innerWidth, innerHeight);
 renderer.setClearColor("#000000", 1);
 
-/* RESIZE FIX */
+/* RESIZE */
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
-
-/* CONTROL */
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 5;
-controls.maxDistance = 40;
 
 /* ❤️ TEXTURE */
 const c = document.createElement('canvas');
@@ -199,7 +191,7 @@ ctx.fillText("❤️", 32, 32);
 
 const texture = new THREE.CanvasTexture(c);
 
-/* 🌌 SPIRAL LOVE */
+/* 🌌 SPIRAL */
 const count = 4000;
 const positions = new Float32Array(count * 3);
 
@@ -209,9 +201,9 @@ for(let i=0;i<count;i++){
   const angle = i * 0.25;
   const radius = 0.01 * i;
 
-  positions[i3] = Math.cos(angle) * radius;
+  positions[i3] = Math.cos(angle)*radius;
   positions[i3+1] = (Math.random()-0.5)*2;
-  positions[i3+2] = Math.sin(angle) * radius;
+  positions[i3+2] = Math.sin(angle)*radius;
 }
 
 const geo = new THREE.BufferGeometry();
@@ -227,7 +219,33 @@ const mat = new THREE.PointsMaterial({
 const galaxy = new THREE.Points(geo, mat);
 scene.add(galaxy);
 
-/* START FUNCTION */
+/* 🎮 SIMPLE CONTROL (DRAG + SCROLL) */
+let isDragging = false;
+let prevX = 0;
+
+canvas.addEventListener('mousedown', (e)=>{
+  isDragging = true;
+  prevX = e.clientX;
+});
+
+canvas.addEventListener('mouseup', ()=> isDragging = false);
+
+canvas.addEventListener('mousemove', (e)=>{
+  if(!isDragging) return;
+  let dx = e.clientX - prevX;
+  galaxy.rotation.y += dx * 0.005;
+  prevX = e.clientX;
+});
+
+/* ZOOM */
+window.addEventListener('wheel', (e)=>{
+  camera.position.z += e.deltaY * 0.01;
+
+  if(camera.position.z < 5) camera.position.z = 5;
+  if(camera.position.z > 40) camera.position.z = 40;
+});
+
+/* START */
 let started = false;
 
 window.startGalaxy = () => {
@@ -239,16 +257,13 @@ window.startGalaxy = () => {
 function animate(){
   requestAnimationFrame(animate);
 
-  controls.update();
-
   galaxy.rotation.y += 0.002;
 
   if(camera.position.z > 8){
-    camera.position.z -= 0.05;
+    camera.position.z -= 0.03;
   }
 
   camera.lookAt(0,0,0);
-
   renderer.render(scene,camera);
 }
 </script>
