@@ -154,28 +154,19 @@ button {
 <!-- 🌌 GALAXY FIXED -->
 <script type="module">
 import * as THREE from 'https://unpkg.com/three@0.150.0/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.150.0/examples/jsm/controls/OrbitControls.js';
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
 camera.position.set(0,5,20);
-scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
+const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor("#000000");
 
-/* 🔥 CONTROL (PHONE FRIENDLY) */
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 8;
-controls.maxDistance = 25;
-controls.rotateSpeed = 0.5;
-
-/* 🌌 SPIRAL LOVE */
-const count = 2000;
+/* 🌌 SIMPLE GALAXY (CONFIRM NAMPak) */
+const count = 3000;
 const positions = new Float32Array(count * 3);
 
 for(let i=0;i<count;i++){
@@ -192,103 +183,30 @@ const geo = new THREE.BufferGeometry();
 geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
 
 const mat = new THREE.PointsMaterial({
-  size:0.15,
-  color:'#ff69b4'
+  size: 0.1,
+  color: '#ff69b4'
 });
 
-const galaxy = new THREE.Points(geo,mat);
+const galaxy = new THREE.Points(geo, mat);
 scene.add(galaxy);
 
-/* ❤️ GAMBAR SEPANJANG SPIRAL */
-const loader = new THREE.TextureLoader();
-const imageMeshes = [];
-
-const images = ['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
-
-images.forEach((img,i)=>{
-  const tex = loader.load(img);
-
-  const material = new THREE.MeshBasicMaterial({
-    map: tex,
-    transparent: true
-  });
-
-  const geometry = new THREE.PlaneGeometry(2,2);
-  const mesh = new THREE.Mesh(geometry, material);
-
-  // 📌 letak ikut spiral position
-  const index = i * 400;
-  mesh.position.set(
-    positions[index*3],
-    positions[index*3+1],
-    positions[index*3+2]
-  );
-
-  // 🔥 rotate sikit ikut spiral
-  mesh.lookAt(0,0,0);
-
-  scene.add(mesh);
-  imageMeshes.push(mesh);
+/* 🎮 BASIC CONTROL (NO ORBIT) */
+window.addEventListener('mousemove', (e)=>{
+  galaxy.rotation.y = e.clientX * 0.001;
 });
 
-/* 🎯 CLICK SYSTEM */
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
-window.addEventListener('click', (event)=>{
-  mouse.x = (event.clientX / innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / innerHeight) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(imageMeshes);
-
-  if(intersects.length > 0){
-    const obj = intersects[0].object;
-
-    // ❤️ SHOW TEXT
-    showLoveText(obj.position);
-  }
-});
-
-/* 💌 FLOATING TEXT */
-function showLoveText(pos){
-  const div = document.createElement('div');
-  div.innerHTML = "I love you sayang ❤️";
-
-  div.style.position = 'absolute';
-  div.style.color = '#ff69b4';
-  div.style.fontFamily = 'Great Vibes';
-  div.style.fontSize = '28px';
-  div.style.textShadow = '0 0 10px #ff1493, 0 0 30px #ff69b4';
-
-  document.body.appendChild(div);
-
-  const vector = pos.clone().project(camera);
-
-  const x = (vector.x * 0.5 + 0.5) * innerWidth;
-  const y = (-vector.y * 0.5 + 0.5) * innerHeight;
-
-  div.style.left = x + 'px';
-  div.style.top = y + 'px';
-
-  setTimeout(()=>div.remove(),3000);
-}
-
-/* 🚀 START */
+/* START */
 window.startGalaxy = () => animate();
 
 function animate(){
   requestAnimationFrame(animate);
 
-  controls.update();
+  galaxy.rotation.y += 0.001;
 
-  galaxy.rotation.y += 0.0015;
-
-  camera.lookAt(0,0,0);
   renderer.render(scene,camera);
 }
 
-/* 🔄 RESIZE FIX */
+/* RESIZE */
 window.addEventListener('resize', ()=>{
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
