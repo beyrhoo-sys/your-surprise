@@ -310,52 +310,67 @@ function fadeMusic(){
 }
 
 /* EFFECT */
+let rainImg, rainHeart, rainWish;
+
 function startEffect(){
-  const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
+const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
-  setInterval(()=>{
-    const img=document.createElement('img');
-    img.src=images[Math.random()*images.length|0];
-    img.style.position='absolute';
-    img.style.top='-100px';
-    img.style.left=Math.random()*100+'%';
-    img.style.width=(Math.random()*80+50)+'px';
-    img.style.animation='fall 5s linear';
-    document.body.appendChild(img);
-    setTimeout(()=>img.remove(),5000);
-  },300);
+rainImg = setInterval(()=>{
+const img=document.createElement('img');
+img.src=images[Math.random()*images.length|0];
+img.style.position='absolute';
+img.style.top='-100px';
+img.style.left=Math.random()*100+'%';
+img.style.width=(Math.random()*80+50)+'px';
+img.style.animation='fall 5s linear';
+document.body.appendChild(img);
+setTimeout(()=>img.remove(),5000);
+},300);
 
-  setInterval(()=>{
-    let h=document.createElement("div");
-    h.className="heart";
-    h.innerHTML="❤️";
-    h.style.left=Math.random()*100+"%";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
-  },200);
+rainHeart = setInterval(()=>{
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML="❤️";
+h.style.left=Math.random()*100+"%";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),5000);
+},200);
 
-  setInterval(()=>{
-    const t=document.createElement('div');
-    t.className='wish';
-    t.innerHTML='happy birthday sayang ♥️';
-    t.style.left=Math.random()*100+'%';
-    t.style.top=Math.random()*80+'%';
-    document.body.appendChild(t);
-    setTimeout(()=>t.remove(),4000);
-  },500);
+rainWish = setInterval(()=>{
+const t=document.createElement('div');
+t.className='wish';
+t.innerHTML='happy birthday sayang ♥️';
+t.style.left=Math.random()*100+'%';
+t.style.top=Math.random()*80+'%';
+document.body.appendChild(t);
+setTimeout(()=>t.remove(),4000);
+},500);
 
-  setTimeout(()=>{
-    document.getElementById('nextBtn').classList.add('show');
-  },10000);
+setTimeout(()=>{
+document.getElementById('nextBtn').classList.add('show');
+},10000);
 }
 
 function goNext(){
-  document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
-  document.getElementById('nextBtn').style.display='none';
-  document.querySelector('.webgl').style.display='block';
-  setTimeout(()=>{
-  startGalaxy();
+  function goNext(){
+
+// ❗ STOP semua effect
+clearInterval(rainImg);
+clearInterval(rainHeart);
+clearInterval(rainWish);
+
+document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
+
+document.getElementById('nextBtn').style.display='none';
+
+const g = document.querySelector('.webgl');
+g.style.display='block';
+
+setTimeout(()=>{
+startGalaxy();
 },100);
+}
+
 }
 
 </script>
