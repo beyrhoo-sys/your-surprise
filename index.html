@@ -15,7 +15,6 @@ body{
   color:white;
 }
 
-/* LOGIN */
 #login{
   position:absolute;
   top:40%;
@@ -30,7 +29,6 @@ h2{
   text-shadow:0 0 20px #ff4d6d,0 0 40px #ff69b4;
 }
 
-/* INPUT GLASS */
 input{
   padding:12px;
   border-radius:12px;
@@ -43,10 +41,6 @@ input{
   box-shadow:0 0 15px rgba(255,105,180,0.4);
 }
 
-input:focus{
-  box-shadow:0 0 20px #ff69b4;
-}
-
 button{
   padding:10px 20px;
   border:none;
@@ -55,7 +49,6 @@ button{
   cursor:pointer;
 }
 
-/* MATRIX */
 #matrix-phase{
   position:absolute;
   inset:0;
@@ -63,7 +56,6 @@ button{
   z-index:50;
 }
 
-/* COUNTDOWN */
 #countdown-num{
   position:absolute;
   top:50%;
@@ -82,7 +74,6 @@ button{
   100%{transform:translate(-50%,-50%) scale(1);opacity:0;}
 }
 
-/* EFFECT */
 .heart{position:absolute;animation:fall 5s linear forwards;}
 @keyframes fall{to{transform:translateY(110vh);opacity:0;}}
 
@@ -90,10 +81,8 @@ button{
   position:absolute;
   font-family:'Great Vibes',cursive;
   color:#ff85c1;
-  text-shadow:0 0 10px #ff1493;
 }
 
-/* NEXT BUTTON FIX */
 #nextBtn{
   position:fixed;
   bottom:30px;
@@ -109,7 +98,6 @@ button{
 
 #nextBtn.show{opacity:1;}
 
-/* GALAXY */
 .webgl{
   position:fixed;
   top:0;
@@ -144,58 +132,64 @@ button{
   <source src="song.mp3">
 </audio>
 
-<!-- 🌌 THREE JS -->
+<!-- 🌌 GALAXY -->
 <script type="module">
 import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,100);
+const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
 camera.position.set(0,5,25);
 scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer({canvas,alpha:true});
-renderer.setSize(innerWidth,innerHeight);
+const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
+renderer.setSize(innerWidth, innerHeight);
 
-/* 🌌 REAL SPIRAL GALAXY */
-const count = 40000;
-const positions = new Float32Array(count*3);
+/* ❤️ TEXTURE */
+const loader = new THREE.TextureLoader();
+const heartTexture = loader.load('https://i.imgur.com/7yUvePI.png');
+
+/* 🌌 SPIRAL */
+const count = 20000;
+const positions = new Float32Array(count * 3);
 
 for(let i=0;i<count;i++){
   const i3=i*3;
 
-  const radius = Math.random()*10;
-  const spin = radius*1.5;
-  const branch = (i%3)/3*Math.PI*2;
+  const radius=Math.random()*10;
+  const spin=radius*2;
+  const branch=(i%4)/4*Math.PI*2;
 
-  positions[i3] = Math.cos(branch+spin)*radius;
-  positions[i3+1] = (Math.random()-0.5)*1.5;
-  positions[i3+2] = Math.sin(branch+spin)*radius;
+  positions[i3]=Math.cos(branch+spin)*radius;
+  positions[i3+1]=(Math.random()-0.5)*1.5;
+  positions[i3+2]=Math.sin(branch+spin)*radius;
 }
 
-const geometry = new THREE.BufferGeometry();
+const geometry=new THREE.BufferGeometry();
 geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
 
-const material = new THREE.PointsMaterial({
-  size:0.05,
-  color:'#ff69b4'
+const material=new THREE.PointsMaterial({
+  size:0.35,
+  map:heartTexture,
+  transparent:true,
+  depthWrite:false
 });
 
-const galaxy = new THREE.Points(geometry,material);
+const galaxy=new THREE.Points(geometry,material);
 scene.add(galaxy);
 
-window.startGalaxy = function(){
+window.startGalaxy=function(){
   animate();
 };
 
 function animate(){
   requestAnimationFrame(animate);
 
-  galaxy.rotation.y += 0.002;
+  galaxy.rotation.y+=0.002;
 
-  if(camera.position.z > 6){
-    camera.position.z -= 0.03; // zoom slow
+  if(camera.position.z>6){
+    camera.position.z-=0.04;
   }
 
   renderer.render(scene,camera);
@@ -210,7 +204,7 @@ function check(){
   }
 }
 
-/* MATRIX + COUNTDOWN FIX */
+/* MATRIX FIX */
 function startMatrix(){
   const phase=document.getElementById('matrix-phase');
   phase.style.display='block';
@@ -222,7 +216,11 @@ function startMatrix(){
   canvas.height=innerHeight;
 
   const chars='♥0123456789';
-  const drops=Array(Math.floor(canvas.width/14)).fill(1);
+
+  // ✅ FIX SINI
+  const drops = Array(Math.floor(canvas.width / 14))
+    .fill(0)
+    .map(() => Math.random() * canvas.height / 14);
 
   const interval=setInterval(()=>{
     ctx.fillStyle="rgba(0,0,0,0.05)";
@@ -239,42 +237,13 @@ function startMatrix(){
   },33);
 
   setTimeout(()=>{
-    runCountdown(3,()=>{
-      clearInterval(interval);
-      phase.style.display='none';
-      startEffect();
-      fadeMusic();
-    });
-  },1500);
+    clearInterval(interval);
+    document.getElementById('matrix-phase').style.display='none';
+    startEffect();
+    fadeMusic();
+  },3000);
 }
 
-/* COUNTDOWN FUNCTION */
-function runCountdown(n,callback){
-  const el=document.getElementById('countdown-num');
-
-  function show(num){
-    el.innerHTML=num;
-    el.style.animation='none';
-    el.offsetHeight;
-    el.style.animation='pulse 1s';
-  }
-
-  let i=n;
-  show(i);
-
-  const int=setInterval(()=>{
-    i--;
-    if(i>0){
-      show(i);
-    }else{
-      clearInterval(int);
-      el.innerHTML='';
-      callback();
-    }
-  },1000);
-}
-
-/* MUSIC */
 function fadeMusic(){
   const m=document.getElementById('music');
   m.volume=0;m.play();
@@ -284,7 +253,6 @@ function fadeMusic(){
   },200);
 }
 
-/* EFFECT */
 let rainImg,rainHeart,rainWish;
 
 function startEffect(){
@@ -326,7 +294,7 @@ function startEffect(){
   },10000);
 }
 
-/* NEXT → GALAXY PERFECT */
+/* NEXT */
 function goNext(){
 
   clearInterval(rainImg);
@@ -337,7 +305,7 @@ function goNext(){
 
   document.getElementById('nextBtn').style.display='none';
 
-  document.body.style.background='black'; // 🔥 IMPORTANT
+  document.body.style.background='black';
 
   const g=document.querySelector('.webgl');
   g.style.display='block';
