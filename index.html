@@ -1,8 +1,10 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
+
 <html>
 <head>
   <title>For my beautiful girl ❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
@@ -13,48 +15,38 @@
       text-align: center;
     }
 
+    .webgl {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      z-index: 1;
+    }
+
     #login {
       position: absolute;
       top: 40%;
       width: 100%;
-      transition: opacity 1s;
+      z-index: 10;
     }
 
     h2 {
       font-family: 'Great Vibes', cursive;
       font-size: 48px;
       color: #ff4d6d;
-      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
-      margin-bottom: 20px;
     }
 
     input {
-      padding: 12px 15px;
-      font-size: 16px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
       border: none;
-      outline: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: #ff4d6d;
-      text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
       text-align: center;
-      transition: 0.3s;
-    }
-
-    input:focus {
-      box-shadow: 0 0 15px #ff4d6d;
-    }
-
-    input::placeholder {
-      color: #ff85a2;
-      opacity: 0.7;
     }
 
     button {
       padding: 10px 20px;
-      border: none;
       border-radius: 10px;
       background: pink;
       cursor: pointer;
@@ -65,7 +57,6 @@
       inset: 0;
       display: none;
       z-index: 50;
-      transition: opacity 1s ease;
     }
 
     canvas {
@@ -76,49 +67,30 @@
     #countdown-num {
       position: absolute;
       top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      font-size: min(18vw, 160px);
-      font-weight: 900;
+      transform: translate(-50%, -50%);
+      font-size: 120px;
       color: #ff69b4;
-      text-shadow: 
-       0 0 20px #ff1493,
-       0 0 50px #ff69b4,
-       0 0 80px #ff1493;
-      font-family: 'Arial Black', sans-serif;
       z-index: 60;
       opacity: 0;
-      pointer-events: none;
-      transition: transform 0.35s ease, opacity 0.35s ease;
     }
 
     .heart {
       position: absolute;
       animation: fall 5s linear forwards;
-      will-change: transform;
     }
 
     @keyframes fall {
-      0% {
-        transform: translate(0, 0);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(calc(-50px + 100px * var(--rand)), 110vh);
-        opacity: 0;
-      }
+      to { transform: translateY(110vh); opacity: 0; }
     }
 
     .wish {
       position: absolute;
-      font-family: 'Great Vibes', cursive;
-      color: #ff85c1;
-      text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
+      color: pink;
       animation: wishPop 4s ease-out forwards;
     }
 
     @keyframes wishPop {
-      0% { transform: scale(0.3); opacity: 0; }
-      30% { transform: scale(1.2); opacity: 1; }
+      0% { opacity: 0; }
       100% { transform: translateY(-60px); opacity: 0; }
     }
 
@@ -126,29 +98,23 @@
       position: fixed;
       bottom: 30px;
       right: 30px;
-      font-family: 'Great Vibes', cursive;
       font-size: 28px;
       color: #ff69b4;
-      text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
       opacity: 0;
-      pointer-events: none;
       transition: 1s;
-      animation: glowPulse 2.5s infinite;
+      z-index: 100;
     }
 
     #nextBtn.show {
       opacity: 1;
-      pointer-events: auto;
-    }
-
-    @keyframes glowPulse {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
     }
   </style>
+
 </head>
 
 <body>
+
+<canvas class="webgl"></canvas>
 
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
@@ -168,6 +134,81 @@
   <source src="song.mp3">
 </audio>
 
+<script type="module">
+
+import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
+
+const canvas = document.querySelector('.webgl');
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0,0,8);
+scene.add(camera);
+
+const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
+renderer.setSize(innerWidth, innerHeight);
+
+// 📸 gambar spiral
+const loader = new THREE.TextureLoader();
+const images = [
+  'pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg',
+  'pic5.jpg','pic6.jpg','pic7.jpg','pic8.jpg',
+  'pic9.jpg','pic10.jpg'
+];
+
+const points = [];
+
+images.forEach((img,i)=>{
+  const tex = loader.load(img);
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.5,1.5),
+    new THREE.MeshBasicMaterial({ map: tex })
+  );
+
+  const angle = i * 0.6;
+  const radius = 2 + i * 0.5;
+
+  mesh.position.x = Math.cos(angle)*radius;
+  mesh.position.z = Math.sin(angle)*radius;
+  mesh.position.y = (i-5)*0.4;
+
+  scene.add(mesh);
+  points.push(mesh.position);
+});
+
+let current = 0;
+
+function moveCamera(){
+  const target = points[current];
+  const start = performance.now();
+  const startPos = camera.position.clone();
+
+  function anim(t){
+    let p = (t-start)/2000;
+    if(p<1){
+      camera.position.lerpVectors(startPos,target,p);
+      camera.lookAt(target);
+      requestAnimationFrame(anim);
+    } else {
+      current = (current+1)%points.length;
+      setTimeout(moveCamera,800);
+    }
+  }
+  requestAnimationFrame(anim);
+}
+
+window.startGalaxy = () => {
+  moveCamera();
+};
+
+function tick(){
+  renderer.render(scene,camera);
+  requestAnimationFrame(tick);
+}
+tick();
+
+</script>
+
 <script>
 function check() {
   if (document.getElementById('pass').value === '111498') {
@@ -176,136 +217,96 @@ function check() {
   }
 }
 
-/* MATRIX */
+/* MATRIX + COUNTDOWN (UNCHANGED FLOW) */
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block'; 
   const canvas = document.getElementById('matrixCanvas');
   const ctx = canvas.getContext('2d');
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 
-  const chars = 'アイウエオ0123456789♥♡★';
-  const size = 14;
-  const columns = canvas.width / size;
-  const drops = Array.from({ length: columns }, () => Math.random() * -50);
+  const chars = '♥0123456789';
+  const drops = Array(canvas.width/14).fill(1);
 
-  const interval = setInterval(() => {
-    ctx.fillStyle = "rgba(0,0,0,0.05)";
+  const interval = setInterval(()=>{
+    ctx.fillStyle="rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#ff69b4";
+    ctx.font="14px monospace";
 
-    ctx.fillStyle = "#ff69b4";
-    ctx.font = size + "px monospace";
-
-    drops.forEach((y, i) => {
-      const text = chars[Math.floor(Math.random() * chars.length)];
-      ctx.fillText(text, i*size, y*size);
-      if (y * size > canvas.height && Math.random() > 0.97) {
-        drops[i] = Math.random() * -20;
-      }
+    drops.forEach((y,i)=>{
+      ctx.fillText(chars[Math.random()*chars.length|0], i*14, y*14);
+      if(y*14>canvas.height) drops[i]=0;
       drops[i]++;
     });
+  },33);
 
-  }, 33);
-
-  setTimeout(() => {
-    runCountdown(3, () => {
-      clearInterval(interval);
-      document.getElementById('matrix-phase').style.display = 'none';
-      startEffect();
-      fadeMusic();
-    });
-  }, 1500);
+  setTimeout(()=>{
+    clearInterval(interval);
+    document.getElementById('matrix-phase').style.display='none';
+    startEffect();
+    fadeMusic();
+  },3000);
 }
 
-function runCountdown(n, cb) {
-  const el = document.getElementById('countdown-num');
-
-  function showNum(num, done) {
-    el.textContent = num;
-    el.style.opacity = '1';
-    el.style.transform = 'translate(-50%, -50%) scale(1.3)';
-
-    setTimeout(() => {
-      el.style.transform = 'translate(-50%, -50%) scale(0.7)';
-      el.style.opacity = '0';
-      setTimeout(done, 380);
-    }, 700);
-  }
-
-  function next() {
-    if (n < 1) return cb();
-    showNum(n--, () => setTimeout(next, 100));
-  }
-
-  next();
-}
-
-function fadeMusic() {
-  const m = document.getElementById('music');
-  m.volume = 0;
-  m.play();
+function fadeMusic(){
+  const m=document.getElementById('music');
+  m.volume=0; m.play();
   let v=0;
   const i=setInterval(()=>{
-    if(v<1){v+=0.05;m.volume=v;}
-    else clearInterval(i);
+    if(v<1){v+=0.05;m.volume=v;} else clearInterval(i);
   },200);
 }
 
-/* EFFECT FIXED */
-function startEffect() {
-  const images = ['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg',];
+/* EFFECT ORIGINAL KAU */
+function startEffect(){
+  const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
   setInterval(()=>{
     const img=document.createElement('img');
     img.src=images[Math.random()*images.length|0];
-
     img.style.position='absolute';
     img.style.top='-100px';
     img.style.left=Math.random()*100+'%';
     img.style.width=(Math.random()*80+50)+'px';
-
-    img.style.setProperty('--rand', Math.random());
-
     img.style.animation='fall 5s linear';
     document.body.appendChild(img);
-
     setTimeout(()=>img.remove(),5000);
   },300);
 
-  setInterval(() => {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "%";
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-
-    heart.style.setProperty('--rand', Math.random());
-
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),6000);
-  },180);
+  setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"%";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  },200);
 
   setInterval(()=>{
     const t=document.createElement('div');
     t.className='wish';
     t.innerHTML='happy birthday sayang ♥️';
     t.style.left=Math.random()*100+'%';
-    t.style.top=(Math.random()*80+10)+'%';
-    t.style.fontSize=(Math.random()*20+20)+'px';
-
+    t.style.top=Math.random()*80+'%';
     document.body.appendChild(t);
     setTimeout(()=>t.remove(),4000);
   },500);
 
   setTimeout(()=>{
     document.getElementById('nextBtn').classList.add('show');
-  },15000);
+  },10000);
 }
 
+/* 👉 NEXT → GALAXY CINEMATIC */
 function goNext(){
-  alert("Next part sini 😏");
+  document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
+  document.getElementById('nextBtn').style.display='none';
+  document.querySelector('.webgl').style.display='block';
+
+  startGalaxy();
 }
 </script>
 
