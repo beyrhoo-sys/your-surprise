@@ -193,9 +193,40 @@ for(let i=0;i<count;i++){
 const geo = new THREE.BufferGeometry();
 geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
 
+const colors = new Float32Array(count * 3);
+
+for(let i=0;i<count;i++){
+  const i3 = i*3;
+
+  const x = positions[i3];
+  const z = positions[i3+2];
+
+  const radius = Math.sqrt(x*x + z*z);
+
+  let color = new THREE.Color();
+
+  if(Math.random() < 0.08){
+    color.set('#ffffff'); // star
+  }
+  else if(radius < 2){
+    color.set('#ff8c42'); // center
+  }
+  else{
+    color.set('#ff6ec7'); // spiral
+  }
+
+  colors[i3] = color.r;
+  colors[i3+1] = color.g;
+  colors[i3+2] = color.b;
+}
+
+geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
+
 const mat = new THREE.PointsMaterial({
-  size: 0.06,
-  color: '#ff6ec7'
+  size: 0.07,
+  vertexColors: true,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false
 });
 
 const galaxy = new THREE.Points(geo, mat);
@@ -219,14 +250,32 @@ images.forEach((img)=>{
   const mesh = new THREE.Mesh(geometry, material);
 
   // RANDOM POSITION DALAM GALAXY
-  const r = Math.random()*6;
-  const angle = Math.random()*Math.PI*2;
+  images.forEach((img, i)=>{
+  const tex = loader.load(img);
+
+  const material = new THREE.MeshBasicMaterial({
+    map: tex,
+    transparent:true
+  });
+
+  const geometry = new THREE.PlaneGeometry(2,2);
+  const mesh = new THREE.Mesh(geometry, material);
+
+  // 🔥 ambil position dari galaxy points
+  const index = Math.floor(Math.random() * (count - 1));
 
   mesh.position.set(
-    Math.cos(angle)*r,
-    (Math.random()-0.5)*2,
-    Math.sin(angle)*r
+    positions[index * 3],
+    positions[index * 3 + 1],
+    positions[index * 3 + 2]
   );
+
+  // 🔥 face camera (nampak cantik)
+  mesh.lookAt(camera.position);
+
+  scene.add(mesh);
+  imageMeshes.push(mesh);
+});
 
   mesh.lookAt(0,0,0);
 
