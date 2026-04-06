@@ -163,20 +163,22 @@
 <script type="module">
 import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 
-const canvas = document.querySelector('.webgl');
+const webglCanvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
-camera.position.set(0,0,8);
+
+// 👉 START JAUH SIKIT (ZOOM EFFECT)
+camera.position.set(0,0,20);
 scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
+const renderer = new THREE.WebGLRenderer({ canvas: webglCanvas, alpha:true });
 renderer.setSize(innerWidth, innerHeight);
 
 const loader = new THREE.TextureLoader();
 const images = [
-  'pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg',
-  'pic5.jpg'];
+  'pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'
+]; // guna yang ada je dulu
 
 const points = [];
 
@@ -187,19 +189,21 @@ images.forEach((img,i)=>{
     new THREE.MeshBasicMaterial({ map: tex })
   );
 
-  const angle = i * 0.6;
-  const radius = 2 + i * 0.5;
+  const angle = i * 0.8;
+  const radius = 2 + i * 0.6;
 
   mesh.position.x = Math.cos(angle)*radius;
   mesh.position.z = Math.sin(angle)*radius;
-  mesh.position.y = (i-5)*0.4;
+  mesh.position.y = (i-2)*0.5;
 
   scene.add(mesh);
   points.push(mesh.position);
 });
 
+let started = false;
 let current = 0;
 
+// 🎥 SMOOTH CAMERA MOVE
 function moveCamera(){
   const target = points[current];
   const start = performance.now();
@@ -207,26 +211,52 @@ function moveCamera(){
 
   function anim(t){
     let p = (t-start)/2000;
-    if(p<1){
-      camera.position.lerpVectors(startPos,target,p);
+
+    if(p < 1){
+      camera.position.lerpVectors(startPos, target, p);
       camera.lookAt(target);
       requestAnimationFrame(anim);
     } else {
       current = (current+1)%points.length;
-      setTimeout(moveCamera,800);
+      setTimeout(moveCamera, 1200);
     }
   }
+
   requestAnimationFrame(anim);
 }
 
-window.startGalaxy = () => moveCamera();
+// 🚀 START GALAXY (ONLY WHEN CLICK NEXT)
+window.startGalaxy = () => {
+  if(started) return;
+  started = true;
 
+  // 👉 zoom masuk dulu
+  const start = performance.now();
+  const startPos = camera.position.clone();
+  const endPos = new THREE.Vector3(0,0,5);
+
+  function zoom(t){
+    let p = (t-start)/2000;
+
+    if(p < 1){
+      camera.position.lerpVectors(startPos, endPos, p);
+      requestAnimationFrame(zoom);
+    } else {
+      moveCamera(); // lepas zoom → start tour
+    }
+  }
+
+  requestAnimationFrame(zoom);
+};
+
+// 🎬 RENDER LOOP
 function tick(){
   renderer.render(scene,camera);
   requestAnimationFrame(tick);
 }
 tick();
 </script>
+
 
 <script>
 function check() {
@@ -323,8 +353,11 @@ function goNext(){
   document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
   document.getElementById('nextBtn').style.display='none';
   document.querySelector('.webgl').style.display='block';
+  setTimeout(()=>{
   startGalaxy();
+},100);
 }
+
 </script>
 
 </body>
