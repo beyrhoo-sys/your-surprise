@@ -2,109 +2,124 @@
 <html>
 <head>
   <title>For my beautiful girl ❤️</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
 
-  <style>
-    body {
-      margin: 0;
-      background: radial-gradient(circle at center, #1a001a, #000000);
-      overflow: hidden;
-      color: white;
-      font-family: 'Poppins', sans-serif;
-      text-align: center;
-    }
+<style>
+body{
+  margin:0;
+  background: radial-gradient(circle at center,#1a001a,#000);
+  overflow:hidden;
+  font-family:'Poppins',sans-serif;
+  text-align:center;
+  color:white;
+}
 
-    #login {
-      position: absolute;
-      top: 40%;
-      width: 100%;
-      z-index: 10;
-    }
+/* LOGIN */
+#login{
+  position:absolute;
+  top:40%;
+  width:100%;
+  z-index:10;
+}
 
-    h2 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 48px;
-      color: #ff4d6d;
-      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
-    }
+h2{
+  font-family:'Great Vibes',cursive;
+  font-size:48px;
+  color:#ff4d6d;
+  text-shadow:0 0 20px #ff4d6d,0 0 40px #ff69b4;
+}
 
-    input {
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      text-align: center;
-    }
+/* INPUT GLASS */
+input{
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,0.1);
+  color:#ff69b4;
+  text-align:center;
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 15px rgba(255,105,180,0.4);
+}
 
-    button {
-      padding: 10px 20px;
-      border-radius: 10px;
-      background: pink;
-      cursor: pointer;
-    }
+input:focus{
+  box-shadow:0 0 20px #ff69b4;
+}
 
-    #matrix-phase {
-      position: absolute;
-      inset: 0;
-      display: none;
-      z-index: 50;
-    }
+button{
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:pink;
+  cursor:pointer;
+}
 
-    #countdown-num {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 120px;
-      color: #ff69b4;
-      z-index: 60;
-      opacity: 0;
-    }
+/* MATRIX */
+#matrix-phase{
+  position:absolute;
+  inset:0;
+  display:none;
+  z-index:50;
+}
 
-    .heart {
-      position: absolute;
-      animation: fall 5s linear forwards;
-    }
+/* COUNTDOWN */
+#countdown-num{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:120px;
+  color:#ff69b4;
+  text-shadow:0 0 20px #ff1493,0 0 40px #ff69b4;
+  opacity:0;
+  z-index:60;
+}
 
-    @keyframes fall {
-      to { transform: translateY(110vh); opacity: 0; }
-    }
+@keyframes pulse{
+  0%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}
+  50%{transform:translate(-50%,-50%) scale(1.3);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(1);opacity:0;}
+}
 
-    .wish {
-      position: absolute;
-      font-family: 'Great Vibes', cursive;
-      color: #ff85c1;
-      animation: wishPop 4s ease-out forwards;
-    }
+/* EFFECT */
+.heart{position:absolute;animation:fall 5s linear forwards;}
+@keyframes fall{to{transform:translateY(110vh);opacity:0;}}
 
-    @keyframes wishPop {
-      0% { opacity: 0; }
-      100% { transform: translateY(-60px); opacity: 0; }
-    }
+.wish{
+  position:absolute;
+  font-family:'Great Vibes',cursive;
+  color:#ff85c1;
+  text-shadow:0 0 10px #ff1493;
+}
 
-    #nextBtn {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      font-size: 28px;
-      color: #ff69b4;
-      opacity: 0;
-      z-index: 100;
-    }
+/* NEXT BUTTON FIX */
+#nextBtn{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  font-family:'Great Vibes',cursive;
+  font-size:30px;
+  color:#ff69b4;
+  text-shadow:0 0 15px #ff1493,0 0 40px #ff69b4;
+  opacity:0;
+  transition:1s;
+  z-index:100;
+}
 
-    #nextBtn.show {
-      opacity: 1;
-    }
+#nextBtn.show{opacity:1;}
 
-    /* 🌌 GALAXY FIX */
-    .webgl {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      z-index: 9999; /* 🔥 penting */
-    }
-  </style>
+/* GALAXY */
+.webgl{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:none;
+  z-index:9999;
+}
+</style>
 </head>
 
 <body>
@@ -136,38 +151,40 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
-camera.position.set(10,10,20);
+const camera = new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,100);
+camera.position.set(0,5,25);
 scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
-renderer.setSize(innerWidth, innerHeight);
+const renderer = new THREE.WebGLRenderer({canvas,alpha:true});
+renderer.setSize(innerWidth,innerHeight);
 
-const count = 20000;
-const positions = new Float32Array(count * 3);
+/* 🌌 REAL SPIRAL GALAXY */
+const count = 40000;
+const positions = new Float32Array(count*3);
 
 for(let i=0;i<count;i++){
-  const i3 = i*3;
-  const radius = Math.random()*10;
-  const angle = radius * 2;
+  const i3=i*3;
 
-  positions[i3] = Math.cos(angle)*radius;
-  positions[i3+1] = (Math.random()-0.5)*2;
-  positions[i3+2] = Math.sin(angle)*radius;
+  const radius = Math.random()*10;
+  const spin = radius*1.5;
+  const branch = (i%3)/3*Math.PI*2;
+
+  positions[i3] = Math.cos(branch+spin)*radius;
+  positions[i3+1] = (Math.random()-0.5)*1.5;
+  positions[i3+2] = Math.sin(branch+spin)*radius;
 }
 
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute('position', new THREE.BufferAttribute(positions,3));
+geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
 
 const material = new THREE.PointsMaterial({
-  size: 0.1,
-  color: '#ff69b4'
+  size:0.05,
+  color:'#ff69b4'
 });
 
-const galaxy = new THREE.Points(geometry, material);
+const galaxy = new THREE.Points(geometry,material);
 scene.add(galaxy);
 
-// 🔥 GLOBAL FUNCTION (IMPORTANT)
 window.startGalaxy = function(){
   animate();
 };
@@ -177,62 +194,90 @@ function animate(){
 
   galaxy.rotation.y += 0.002;
 
-  if(camera.position.z > 8){
-    camera.position.z -= 0.05;
+  if(camera.position.z > 6){
+    camera.position.z -= 0.03; // zoom slow
   }
-
-  camera.lookAt(0,0,0);
 
   renderer.render(scene,camera);
 }
 </script>
 
-<!-- 🌙 MAIN SCRIPT -->
 <script>
-function check() {
-  if (document.getElementById('pass').value === '111498') {
-    document.getElementById('login').style.display = 'none';
+function check(){
+  if(document.getElementById('pass').value==='111498'){
+    document.getElementById('login').style.display='none';
     startMatrix();
   }
 }
 
-/* MATRIX */
-function startMatrix() {
-  const phase = document.getElementById('matrix-phase');
-  phase.style.display = 'block'; 
-  const canvas = document.getElementById('matrixCanvas');
-  const ctx = canvas.getContext('2d');
+/* MATRIX + COUNTDOWN FIX */
+function startMatrix(){
+  const phase=document.getElementById('matrix-phase');
+  phase.style.display='block';
 
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+  const canvas=document.getElementById('matrixCanvas');
+  const ctx=canvas.getContext('2d');
 
-  const chars = '♥0123456789';
-  const drops = Array(Math.floor(canvas.width / 14)).fill(1);
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
 
-  const interval = setInterval(()=>{
+  const chars='♥0123456789';
+  const drops=Array(Math.floor(canvas.width/14)).fill(1);
+
+  const interval=setInterval(()=>{
     ctx.fillStyle="rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
+
     ctx.fillStyle="#ff69b4";
     ctx.font="14px monospace";
 
     drops.forEach((y,i)=>{
-      ctx.fillText(chars[Math.random()*chars.length|0], i*14, y*14);
+      ctx.fillText(chars[Math.random()*chars.length|0],i*14,y*14);
       if(y*14>canvas.height) drops[i]=0;
       drops[i]++;
     });
   },33);
 
   setTimeout(()=>{
-    clearInterval(interval);
-    document.getElementById('matrix-phase').style.display='none';
-    startEffect();
-    fadeMusic();
-  },3000);
+    runCountdown(3,()=>{
+      clearInterval(interval);
+      phase.style.display='none';
+      startEffect();
+      fadeMusic();
+    });
+  },1500);
 }
 
+/* COUNTDOWN FUNCTION */
+function runCountdown(n,callback){
+  const el=document.getElementById('countdown-num');
+
+  function show(num){
+    el.innerHTML=num;
+    el.style.animation='none';
+    el.offsetHeight;
+    el.style.animation='pulse 1s';
+  }
+
+  let i=n;
+  show(i);
+
+  const int=setInterval(()=>{
+    i--;
+    if(i>0){
+      show(i);
+    }else{
+      clearInterval(int);
+      el.innerHTML='';
+      callback();
+    }
+  },1000);
+}
+
+/* MUSIC */
 function fadeMusic(){
   const m=document.getElementById('music');
-  m.volume=0; m.play();
+  m.volume=0;m.play();
   let v=0;
   const i=setInterval(()=>{
     if(v<1){v+=0.05;m.volume=v;} else clearInterval(i);
@@ -240,12 +285,12 @@ function fadeMusic(){
 }
 
 /* EFFECT */
-let rainImg, rainHeart, rainWish;
+let rainImg,rainHeart,rainWish;
 
 function startEffect(){
   const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
-  rainImg = setInterval(()=>{
+  rainImg=setInterval(()=>{
     const img=document.createElement('img');
     img.src=images[Math.random()*images.length|0];
     img.style.position='absolute';
@@ -257,7 +302,7 @@ function startEffect(){
     setTimeout(()=>img.remove(),5000);
   },300);
 
-  rainHeart = setInterval(()=>{
+  rainHeart=setInterval(()=>{
     let h=document.createElement("div");
     h.className="heart";
     h.innerHTML="❤️";
@@ -266,7 +311,7 @@ function startEffect(){
     setTimeout(()=>h.remove(),5000);
   },200);
 
-  rainWish = setInterval(()=>{
+  rainWish=setInterval(()=>{
     const t=document.createElement('div');
     t.className='wish';
     t.innerHTML='happy birthday sayang ♥️';
@@ -281,26 +326,24 @@ function startEffect(){
   },10000);
 }
 
-/* 👉 NEXT → GALAXY FIXED */
+/* NEXT → GALAXY PERFECT */
 function goNext(){
 
   clearInterval(rainImg);
   clearInterval(rainHeart);
   clearInterval(rainWish);
 
-  document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
+  document.querySelectorAll('.heart,.wish,img').forEach(el=>el.remove());
 
   document.getElementById('nextBtn').style.display='none';
 
-  const g = document.querySelector('.webgl');
+  document.body.style.background='black'; // 🔥 IMPORTANT
+
+  const g=document.querySelector('.webgl');
   g.style.display='block';
 
   setTimeout(()=>{
-    if(window.startGalaxy){
-      window.startGalaxy();
-    } else {
-      alert("Galaxy tak load");
-    }
+    startGalaxy();
   },200);
 }
 </script>
