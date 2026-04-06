@@ -153,49 +153,35 @@ button {
 
 <!-- 🌌 GALAXY FIXED -->
 <script type="module">
-import * as THREE from 'https://unpkg.com/three@0.150.0/build/three.module.js';
+import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
+import { OrbitControls } from 'https://cdn.skypack.dev/three@0.150.0/examples/jsm/controls/OrbitControls.js';
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
-/* CAMERA */
 const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
 camera.position.set(0,5,20);
 scene.add(camera);
 
-/* RENDERER */
-const renderer = new THREE.WebGLRenderer({ canvas });
+const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
 renderer.setSize(innerWidth, innerHeight);
-renderer.setClearColor("#000000");
 
-/* RESIZE */
-window.addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
+/* 🔥 CONTROL (PHONE FRIENDLY) */
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 8;
+controls.maxDistance = 25;
+controls.rotateSpeed = 0.5;
 
-/* ❤️ LOVE TEXTURE */
-const c = document.createElement('canvas');
-c.width = 64;
-c.height = 64;
-const ctx = c.getContext('2d');
-
-ctx.font = "48px serif";
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillText("❤️", 32, 32);
-
-const loveTexture = new THREE.CanvasTexture(c);
-
-/* 🌌 SPIRAL */
-const count = 4000;
+/* 🌌 SPIRAL LOVE */
+const count = 2000;
 const positions = new Float32Array(count * 3);
 
 for(let i=0;i<count;i++){
   const i3 = i*3;
-  const angle = i * 0.25;
-  const radius = 0.01 * i;
+  const angle = i * 0.3;
+  const radius = 0.02 * i;
 
   positions[i3] = Math.cos(angle)*radius;
   positions[i3+1] = (Math.random()-0.5)*2;
@@ -206,69 +192,48 @@ const geo = new THREE.BufferGeometry();
 geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
 
 const mat = new THREE.PointsMaterial({
-  size: 0.7,
-  map: loveTexture,
-  transparent: true,
-  depthWrite: false,
-  blending: THREE.AdditiveBlending
+  size:0.15,
+  color:'#ff69b4'
 });
 
-const galaxy = new THREE.Points(geo, mat);
+const galaxy = new THREE.Points(geo,mat);
 scene.add(galaxy);
 
-/* 🖼️ GAMBAR */
+/* ❤️ GAMBAR SEPANJANG SPIRAL */
 const loader = new THREE.TextureLoader();
-const images = ['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
-
 const imageMeshes = [];
+
+const images = ['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
 images.forEach((img,i)=>{
   const tex = loader.load(img);
 
-  const mesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(2,2),
-    new THREE.MeshBasicMaterial({ map: tex, transparent:true })
-  );
+  const material = new THREE.MeshBasicMaterial({
+    map: tex,
+    transparent: true
+  });
 
-  const angle = i * 1.5;
-  const radius = 5;
+  const geometry = new THREE.PlaneGeometry(2,2);
+  const mesh = new THREE.Mesh(geometry, material);
 
+  // 📌 letak ikut spiral position
+  const index = i * 400;
   mesh.position.set(
-    Math.cos(angle)*radius,
-    (Math.random()-0.5)*2,
-    Math.sin(angle)*radius
+    positions[index*3],
+    positions[index*3+1],
+    positions[index*3+2]
   );
+
+  // 🔥 rotate sikit ikut spiral
+  mesh.lookAt(0,0,0);
 
   scene.add(mesh);
   imageMeshes.push(mesh);
 });
 
-/* 💖 TEXT I LOVE YOU */
-const textCanvas = document.createElement('canvas');
-textCanvas.width = 512;
-textCanvas.height = 256;
-
-const tctx = textCanvas.getContext('2d');
-tctx.fillStyle = "pink";
-tctx.font = "bold 60px Poppins";
-tctx.textAlign = "center";
-tctx.fillText("I LOVE YOU ❤️", 256, 130);
-
-const textTexture = new THREE.CanvasTexture(textCanvas);
-
-const textMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(6,3),
-  new THREE.MeshBasicMaterial({ map: textTexture, transparent:true })
-);
-
-textMesh.position.set(0,0,0);
-scene.add(textMesh);
-
-/* 🎯 CLICK DETECT */
+/* 🎯 CLICK SYSTEM */
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-
-let zoomTarget = null;
 
 window.addEventListener('click', (event)=>{
   mouse.x = (event.clientX / innerWidth) * 2 - 1;
@@ -278,83 +243,57 @@ window.addEventListener('click', (event)=>{
   const intersects = raycaster.intersectObjects(imageMeshes);
 
   if(intersects.length > 0){
-  const target = intersects[0].object.position.clone();
+    const obj = intersects[0].object;
 
-  zoomTarget = new THREE.Vector3(
-    target.x * 0.6,
-    target.y * 0.6,
-    target.z * 0.6 + 6
-  );
+    // ❤️ SHOW TEXT
+    showLoveText(obj.position);
+  }
+});
+
+/* 💌 FLOATING TEXT */
+function showLoveText(pos){
+  const div = document.createElement('div');
+  div.innerHTML = "I love you sayang ❤️";
+
+  div.style.position = 'absolute';
+  div.style.color = '#ff69b4';
+  div.style.fontFamily = 'Great Vibes';
+  div.style.fontSize = '28px';
+  div.style.textShadow = '0 0 10px #ff1493, 0 0 30px #ff69b4';
+
+  document.body.appendChild(div);
+
+  const vector = pos.clone().project(camera);
+
+  const x = (vector.x * 0.5 + 0.5) * innerWidth;
+  const y = (-vector.y * 0.5 + 0.5) * innerHeight;
+
+  div.style.left = x + 'px';
+  div.style.top = y + 'px';
+
+  setTimeout(()=>div.remove(),3000);
 }
-});
 
-/* 🎮 CONTROL */
-let isDragging = false;
-let prevX = 0;
-
-canvas.addEventListener('mousedown', (e)=>{
-  isDragging = true;
-  prevX = e.clientX;
-});
-
-canvas.addEventListener('mouseup', ()=> isDragging = false);
-
-canvas.addEventListener('mousemove', (e)=>{
-  if(!isDragging) return;
-  let dx = e.clientX - prevX;
-  galaxy.rotation.y += dx * 0.005;
-  prevX = e.clientX;
-});
-
-/* ZOOM SCROLL */
-window.addEventListener('wheel', (e)=>{
-  camera.position.z += e.deltaY * 0.01;
-
-  // 🔥 LIMIT SUPAYA TAK MASUK DALAM SPIRAL
-  if(camera.position.z < 10) camera.position.z = 10;
-  if(camera.position.z > 50) camera.position.z = 50;
-});
-
-/* START */
-let started = false;
-
-window.startGalaxy = () => {
-  if(started) return;
-  started = true;
-  animate();
-};
+/* 🚀 START */
+window.startGalaxy = () => animate();
 
 function animate(){
   requestAnimationFrame(animate);
 
-  galaxy.rotation.y += 0.002;
+  controls.update();
 
-  imageMeshes.forEach(m=>{
-    m.lookAt(camera.position);
-  });
-
-  textMesh.lookAt(camera.position);
-  textMesh.position.y = Math.sin(Date.now()*0.002) * 1.5;
-
-/* 🎥 ZOOM MASUK GAMBAR */
-if(zoomTarget){
-  camera.position.lerp(
-    new THREE.Vector3(
-      zoomTarget.x,
-      zoomTarget.y,
-      zoomTarget.z + 2
-    ),
-    0.05
-  );
-}else{
-  if(camera.position.z > 8){
-    camera.position.z -= 0.03;
-  }
-}
+  galaxy.rotation.y += 0.0015;
 
   camera.lookAt(0,0,0);
   renderer.render(scene,camera);
 }
+
+/* 🔄 RESIZE FIX */
+window.addEventListener('resize', ()=>{
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
 </script>
 
 <script>
