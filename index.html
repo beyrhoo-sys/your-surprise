@@ -176,9 +176,7 @@ renderer.setSize(innerWidth, innerHeight);
 const loader = new THREE.TextureLoader();
 const images = [
   'pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg',
-  'pic5.jpg','pic6.jpg','pic7.jpg','pic8.jpg',
-  'pic9.jpg','pic10.jpg'
-];
+  'pic5.jpg'];
 
 const points = [];
 
@@ -249,7 +247,7 @@ function startMatrix() {
   canvas.height = innerHeight;
 
   const chars = '♥0123456789';
-  const drops = Array(canvas.width/14).fill(1);
+  const drops = Array(Math.floor(canvas.width / 14)).fill(1);
 
   const interval = setInterval(()=>{
     ctx.fillStyle="rgba(0,0,0,0.05)";
