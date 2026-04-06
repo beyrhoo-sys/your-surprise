@@ -19,7 +19,6 @@
       position: absolute;
       top: 40%;
       width: 100%;
-      transition: opacity 1s;
       z-index: 10;
     }
 
@@ -28,36 +27,17 @@
       font-size: 48px;
       color: #ff4d6d;
       text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
-      margin-bottom: 20px;
     }
 
     input {
-      padding: 12px 15px;
-      font-size: 16px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
       border: none;
-      outline: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: #ff4d6d;
-      text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
       text-align: center;
-      transition: 0.3s;
-    }
-
-    input:focus {
-      box-shadow: 0 0 15px #ff4d6d;
-    }
-
-    input::placeholder {
-      color: #ff85a2;
-      opacity: 0.7;
     }
 
     button {
       padding: 10px 20px;
-      border: none;
       border-radius: 10px;
       background: pink;
       cursor: pointer;
@@ -120,17 +100,17 @@
       z-index: 100;
     }
 
-    #nextBtn.show {
-      opacity: 1;
-    }
+    #nextBtn.show { opacity: 1; }
 
-    /* 👉 TAMBAH SAHAJA */
+    /* 🌌 GALAXY */
     .webgl {
       position: fixed;
       top: 0;
       left: 0;
+      width: 100%;
+      height: 100%;
       display: none;
-      z-index: 1;
+      z-index: 999;
     }
   </style>
 
@@ -156,109 +136,93 @@
   <source src="song.mp3">
 </audio>
 
-<!-- 🌌 TAMBAH GALAXY -->
-
 <canvas class="webgl"></canvas>
+
+<!-- 🌌 GALAXY (NO IMAGE) -->
 
 <script type="module">
 import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 
-const webglCanvas = document.querySelector('.webgl');
+const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
+camera.position.z = 8;
 
-// 👉 START JAUH SIKIT (ZOOM EFFECT)
-camera.position.set(0,0,20);
-scene.add(camera);
-
-const renderer = new THREE.WebGLRenderer({ canvas: webglCanvas, alpha:true });
+const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
 renderer.setSize(innerWidth, innerHeight);
 
-const loader = new THREE.TextureLoader();
-const images = [
-  'pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'
-]; // guna yang ada je dulu
+// particles galaxy
+const count = 2000;
+const pos = new Float32Array(count * 3);
 
-const points = [];
+for(let i=0;i<count;i++){
+  let i3=i*3;
+  let r=Math.random()*5;
+  let a=r*1.5;
 
-images.forEach((img,i)=>{
-  const tex = loader.load(img);
-  const mesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.5,1.5),
-    new THREE.MeshBasicMaterial({ map: tex })
-  );
-
-  const angle = i * 0.8;
-  const radius = 2 + i * 0.6;
-
-  mesh.position.x = Math.cos(angle)*radius;
-  mesh.position.z = Math.sin(angle)*radius;
-  mesh.position.y = (i-2)*0.5;
-
-  scene.add(mesh);
-  points.push(mesh.position);
-});
-
-let started = false;
-let current = 0;
-
-// 🎥 SMOOTH CAMERA MOVE
-function moveCamera(){
-  const target = points[current];
-  const start = performance.now();
-  const startPos = camera.position.clone();
-
-  function anim(t){
-    let p = (t-start)/2000;
-
-    if(p < 1){
-      camera.position.lerpVectors(startPos, target, p);
-      camera.lookAt(target);
-      requestAnimationFrame(anim);
-    } else {
-      current = (current+1)%points.length;
-      setTimeout(moveCamera, 1200);
-    }
-  }
-
-  requestAnimationFrame(anim);
+  pos[i3]=Math.cos(a)*r;
+  pos[i3+1]=(Math.random()-0.5)*2;
+  pos[i3+2]=Math.sin(a)*r;
 }
 
-// 🚀 START GALAXY (ONLY WHEN CLICK NEXT)
-window.startGalaxy = () => {
-  if(started) return;
-  started = true;
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
 
-  // 👉 zoom masuk dulu
-  const start = performance.now();
-  const startPos = camera.position.clone();
-  const endPos = new THREE.Vector3(0,0,5);
+const mat = new THREE.PointsMaterial({
+  size:0.05,
+  color:'#ff69b4'
+});
 
-  function zoom(t){
-    let p = (t-start)/2000;
+const galaxy = new THREE.Points(geo,mat);
+scene.add(galaxy);
 
-    if(p < 1){
-      camera.position.lerpVectors(startPos, endPos, p);
-      requestAnimationFrame(zoom);
-    } else {
-      moveCamera(); // lepas zoom → start tour
-    }
-  }
-
-  requestAnimationFrame(zoom);
-};
-
-// 🎬 RENDER LOOP
 function tick(){
+  galaxy.rotation.y += 0.002;
   renderer.render(scene,camera);
   requestAnimationFrame(tick);
 }
 tick();
+
+window.startGalaxy = () => {
+  let start=performance.now();
+  let startZ=camera.position.z;
+
+  function zoom(t){
+    let p=(t-start)/2000;
+    if(p<1){
+      camera.position.z = startZ - p*4;
+      requestAnimationFrame(zoom);
+    }
+  }
+  requestAnimationFrame(zoom);
+};
 </script>
 
-
 <script>
+
+/* COUNTDOWN */
+function runCountdown(n, cb) {
+  const el = document.getElementById('countdown-num');
+
+  function show(num, done){
+    el.textContent=num;
+    el.style.opacity=1;
+
+    setTimeout(()=>{
+      el.style.opacity=0;
+      setTimeout(done,300);
+    },700);
+  }
+
+  function next(){
+    if(n<1) return cb();
+    show(n--,()=>setTimeout(next,150));
+  }
+
+  next();
+}
+
 function check() {
   if (document.getElementById('pass').value === '111498') {
     document.getElementById('login').style.display = 'none';
@@ -270,36 +234,40 @@ function check() {
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block'; 
+
   const canvas = document.getElementById('matrixCanvas');
   const ctx = canvas.getContext('2d');
 
   canvas.width = innerWidth;
   canvas.height = innerHeight;
 
-  const chars = '♥0123456789';
   const drops = Array(Math.floor(canvas.width / 14)).fill(1);
 
   const interval = setInterval(()=>{
     ctx.fillStyle="rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
+
     ctx.fillStyle="#ff69b4";
     ctx.font="14px monospace";
 
     drops.forEach((y,i)=>{
-      ctx.fillText(chars[Math.random()*chars.length|0], i*14, y*14);
+      ctx.fillText("♥", i*14, y*14);
       if(y*14>canvas.height) drops[i]=0;
       drops[i]++;
     });
   },33);
 
   setTimeout(()=>{
-    clearInterval(interval);
-    document.getElementById('matrix-phase').style.display='none';
-    startEffect();
-    fadeMusic();
-  },3000);
+    runCountdown(3, () => {
+      clearInterval(interval);
+      phase.style.display='none';
+      startEffect();
+      fadeMusic();
+    });
+  },1500);
 }
 
+/* MUSIC */
 function fadeMusic(){
   const m=document.getElementById('music');
   m.volume=0; m.play();
@@ -309,65 +277,58 @@ function fadeMusic(){
   },200);
 }
 
-/* EFFECT */
+/* EFFECT (UNCHANGED) */
 let rainImg, rainHeart, rainWish;
 
 function startEffect(){
-const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
+  const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
-rainImg = setInterval(()=>{
-const img=document.createElement('img');
-img.src=images[Math.random()*images.length|0];
-img.style.position='absolute';
-img.style.top='-100px';
-img.style.left=Math.random()*100+'%';
-img.style.width=(Math.random()*80+50)+'px';
-img.style.animation='fall 5s linear';
-document.body.appendChild(img);
-setTimeout(()=>img.remove(),5000);
-},300);
+  rainImg = setInterval(()=>{
+    const img=document.createElement('img');
+    img.src=images[Math.random()*images.length|0];
+    img.style.position='absolute';
+    img.style.top='-100px';
+    img.style.left=Math.random()*100+'%';
+    img.style.width=(Math.random()*80+50)+'px';
+    img.style.animation='fall 5s linear';
+    document.body.appendChild(img);
+    setTimeout(()=>img.remove(),5000);
+  },300);
 
-rainHeart = setInterval(()=>{
-let h=document.createElement("div");
-h.className="heart";
-h.innerHTML="❤️";
-h.style.left=Math.random()*100+"%";
-document.body.appendChild(h);
-setTimeout(()=>h.remove(),5000);
-},200);
+  rainHeart = setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"%";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  },200);
 
-rainWish = setInterval(()=>{
-const t=document.createElement('div');
-t.className='wish';
-t.innerHTML='happy birthday sayang ♥️';
-t.style.left=Math.random()*100+'%';
-t.style.top=Math.random()*80+'%';
-document.body.appendChild(t);
-setTimeout(()=>t.remove(),4000);
-},500);
+  rainWish = setInterval(()=>{
+    const t=document.createElement('div');
+    t.className='wish';
+    t.innerHTML='happy birthday sayang ♥️';
+    t.style.left=Math.random()*100+'%';
+    t.style.top=Math.random()*80+'%';
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),4000);
+  },500);
 
-setTimeout(()=>{
-document.getElementById('nextBtn').classList.add('show');
-},10000);
+  setTimeout(()=>{
+    document.getElementById('nextBtn').classList.add('show');
+  },10000);
 }
 
+/* 👉 NEXT (GALAXY OVERLAY ONLY) */
 function goNext(){
+  document.getElementById('nextBtn').style.display='none';
 
-// ❗ STOP semua effect
-clearInterval(rainImg);
-clearInterval(rainHeart);
-clearInterval(rainWish);
+  const g = document.querySelector('.webgl');
+  g.style.display='block';
 
-document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
-
-document.getElementById('nextBtn').style.display='none';
-
-const g = document.querySelector('.webgl');
-g.style.display='block';
-
-setTimeout(()=>{
-startGalaxy();
-},100);
+  setTimeout(()=>{
+    startGalaxy();
+  },100);
 }
 
 </script>
