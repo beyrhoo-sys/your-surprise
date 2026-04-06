@@ -35,14 +35,34 @@ input {
   border-radius: 12px;
   border: none;
   outline: none;
-  background: rgba(255, 255, 255, 0.1);
+
+  /* 🔥 GLASS EFFECT */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
   color: #ff4d6d;
-  text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 10px rgba(255,255,255,0.2);
   text-align: center;
+
+  box-shadow: 
+    0 0 10px rgba(255,255,255,0.2),
+    0 0 20px rgba(255,105,180,0.3);
+
+  text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
+
+  transition: 0.3s;
 }
 
+input:focus {
+  box-shadow: 
+    0 0 15px #ff4d6d,
+    0 0 30px #ff69b4;
+}
+
+input::placeholder {
+  color: #ff85a2;
+  opacity: 0.7;
+}
 button {
   padding: 10px 20px;
   border-radius: 10px;
@@ -133,24 +153,31 @@ button {
 
 <!-- 🌌 GALAXY FIXED -->
 <script type="module">
-import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
-import { OrbitControls } from 'https://cdn.skypack.dev/three@0.150.0/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'https://unpkg.com/three@0.150.0/build/three.module.js';
+import { OrbitControls } from 'https://unpkg.com/three@0.150.0/examples/jsm/controls/OrbitControls.js';
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
+/* CAMERA */
 const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
 camera.position.set(0,5,20);
 scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer({ canvas, alpha:false });
-renderer.setClearColor(0x000000, 1); // background hitam solid
+/* RENDERER 🔥 FIX */
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas,
+  alpha: false
+});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setClearColor("#000000", 1);
 
+/* RESIZE FIX */
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
-});  
+});
 
 /* CONTROL */
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -159,52 +186,61 @@ controls.enablePan = false;
 controls.minDistance = 5;
 controls.maxDistance = 40;
 
-/* ❤️ TEXTURE (FIXED CENTER) */
+/* ❤️ TEXTURE */
 const c = document.createElement('canvas');
 c.width = 64;
 c.height = 64;
 const ctx = c.getContext('2d');
-ctx.clearRect(0,0,64,64);
+
 ctx.font = "48px serif";
 ctx.textAlign = "center";
 ctx.textBaseline = "middle";
-ctx.fillText("💖", 32, 32);
+ctx.fillText("❤️", 32, 32);
 
 const texture = new THREE.CanvasTexture(c);
 
-/* 🌪️ SPIRAL */
-const count = 5000;
+/* 🌌 SPIRAL LOVE */
+const count = 4000;
 const positions = new Float32Array(count * 3);
 
 for(let i=0;i<count;i++){
   const i3 = i*3;
-  const angle = i * 0.25;
-  const radius = 0.03 * i;
 
-  positions[i3] = Math.cos(angle)*radius;
-  positions[i3+1] = (Math.random()-0.5)*1.5;
-  positions[i3+2] = Math.sin(angle)*radius;
+  const angle = i * 0.25;
+  const radius = 0.01 * i;
+
+  positions[i3] = Math.cos(angle) * radius;
+  positions[i3+1] = (Math.random()-0.5)*2;
+  positions[i3+2] = Math.sin(angle) * radius;
 }
 
 const geo = new THREE.BufferGeometry();
 geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
 
 const mat = new THREE.PointsMaterial({
-  size:0.5,
-  map:texture,
-  transparent:true,
-  depthWrite:false
+  size: 0.5,
+  map: texture,
+  transparent: true,
+  depthWrite: false
 });
 
-const galaxy = new THREE.Points(geo,mat);
+const galaxy = new THREE.Points(geo, mat);
 scene.add(galaxy);
 
-window.startGalaxy = () => animate();
+/* START FUNCTION */
+let started = false;
+
+window.startGalaxy = () => {
+  if(started) return;
+  started = true;
+  animate();
+};
 
 function animate(){
   requestAnimationFrame(animate);
 
   controls.update();
+
   galaxy.rotation.y += 0.002;
 
   if(camera.position.z > 8){
@@ -212,6 +248,7 @@ function animate(){
   }
 
   camera.lookAt(0,0,0);
+
   renderer.render(scene,camera);
 }
 </script>
