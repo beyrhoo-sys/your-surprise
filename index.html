@@ -29,7 +29,6 @@ h2 {
   text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
 }
 
-/* INPUT FIX BALIK */
 input {
   padding: 12px 15px;
   font-size: 16px;
@@ -42,18 +41,8 @@ input {
   backdrop-filter: blur(10px);
   box-shadow: 0 0 10px rgba(255,255,255,0.2);
   text-align: center;
-  transition: 0.3s;
 }
 
-input:focus {
-  box-shadow: 0 0 15px #ff4d6d;
-}
-
-input::placeholder {
-  color: #ff85a2;
-}
-
-/* BUTTON */
 button {
   padding: 10px 20px;
   border-radius: 10px;
@@ -96,7 +85,7 @@ button {
   text-shadow:0 0 10px #ff1493,0 0 30px #ff69b4;
 }
 
-/* NEXT BUTTON */
+/* NEXT */
 #nextBtn {
   position:fixed;
   bottom:30px;
@@ -142,7 +131,7 @@ button {
   <source src="song.mp3">
 </audio>
 
-<!-- 🌌 GALAXY LOVE -->
+<!-- 🌌 GALAXY FIXED -->
 <script type="module">
 import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.150.0/examples/jsm/controls/OrbitControls.js';
@@ -157,35 +146,37 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(innerWidth, innerHeight);
 
-/* 🔥 CONTROL */
+/* CONTROL */
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
 controls.minDistance = 5;
 controls.maxDistance = 40;
 
-/* ❤️ TEXTURE LOVE */
+/* ❤️ TEXTURE (FIXED CENTER) */
 const c = document.createElement('canvas');
-c.width = 64; 
+c.width = 64;
 c.height = 64;
-
 const ctx = c.getContext('2d');
+ctx.clearRect(0,0,64,64);
 ctx.font = "48px serif";
-ctx.fillText("❤️", 10, 50);
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("💖", 32, 32);
 
 const texture = new THREE.CanvasTexture(c);
 
-/* 🌌 SPIRAL */
-const count = 2000;
+/* 🌪️ SPIRAL */
+const count = 5000;
 const positions = new Float32Array(count * 3);
 
 for(let i=0;i<count;i++){
   const i3 = i*3;
-  const angle = i * 0.3;
-  const radius = 0.02 * i;
+  const angle = i * 0.25;
+  const radius = 0.03 * i;
 
   positions[i3] = Math.cos(angle)*radius;
-  positions[i3+1] = (Math.random()-0.5)*2;
+  positions[i3+1] = (Math.random()-0.5)*1.5;
   positions[i3+2] = Math.sin(angle)*radius;
 }
 
@@ -193,22 +184,21 @@ const geo = new THREE.BufferGeometry();
 geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
 
 const mat = new THREE.PointsMaterial({
-  size:0.6,
+  size:0.5,
   map:texture,
-  transparent:true
+  transparent:true,
+  depthWrite:false
 });
 
 const galaxy = new THREE.Points(geo,mat);
 scene.add(galaxy);
 
-/* 🚀 START */
 window.startGalaxy = () => animate();
 
 function animate(){
   requestAnimationFrame(animate);
 
-  controls.update(); // 🔥 penting
-
+  controls.update();
   galaxy.rotation.y += 0.002;
 
   if(camera.position.z > 8){
@@ -228,7 +218,7 @@ function check(){
   }
 }
 
-/* MATRIX + COUNTDOWN FIX */
+/* MATRIX + COUNTDOWN (UNCHANGED) */
 function startMatrix(){
   const phase = document.getElementById('matrix-phase');
   phase.style.display='block';
@@ -301,7 +291,7 @@ function fadeMusic(){
   },200);
 }
 
-/* EFFECT (UNCHANGED) */
+/* EFFECT */
 let rainImg,rainHeart,rainWish;
 
 function startEffect(){
@@ -343,7 +333,6 @@ function startEffect(){
   },10000);
 }
 
-/* NEXT */
 function goNext(){
   clearInterval(rainImg);
   clearInterval(rainHeart);
@@ -353,8 +342,7 @@ function goNext(){
 
   nextBtn.style.display='none';
 
-  const g=document.querySelector('.webgl');
-  g.style.display='block';
+  document.querySelector('.webgl').style.display='block';
   document.body.style.background="black";
 
   setTimeout(()=>startGalaxy(),200);
