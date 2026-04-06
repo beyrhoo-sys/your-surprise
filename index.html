@@ -278,8 +278,14 @@ window.addEventListener('click', (event)=>{
   const intersects = raycaster.intersectObjects(imageMeshes);
 
   if(intersects.length > 0){
-    zoomTarget = intersects[0].object.position.clone();
-  }
+  const target = intersects[0].object.position.clone();
+
+  zoomTarget = new THREE.Vector3(
+    target.x * 0.6,
+    target.y * 0.6,
+    target.z * 0.6 + 6
+  );
+}
 });
 
 /* 🎮 CONTROL */
@@ -303,6 +309,10 @@ canvas.addEventListener('mousemove', (e)=>{
 /* ZOOM SCROLL */
 window.addEventListener('wheel', (e)=>{
   camera.position.z += e.deltaY * 0.01;
+
+  // 🔥 LIMIT SUPAYA TAK MASUK DALAM SPIRAL
+  if(camera.position.z < 10) camera.position.z = 10;
+  if(camera.position.z > 50) camera.position.z = 50;
 });
 
 /* START */
