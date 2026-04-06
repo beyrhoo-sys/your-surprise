@@ -167,7 +167,7 @@ renderer.setSize(innerWidth, innerHeight);
 renderer.setClearColor("#000000");
 
 /* 🌌 REAL SPIRAL GALAXY */
-const count = 8000;
+const count = 20000;
 const branches = 3;
 const spin = 1.2;
 const randomness = 0.4;
@@ -230,12 +230,11 @@ for(let i=0;i<count;i++){
 geo.setAttribute('color', new THREE.BufferAttribute(colors,3));
 
 const mat = new THREE.PointsMaterial({
-  size: 0.06,
+  size: 0.04,
   vertexColors: true,
   blending: THREE.AdditiveBlending,
   depthWrite: false,
-  transparent: true,
-  opacity: 0.9
+  transparent: true
 });
 
 const galaxy = new THREE.Points(geo, mat);
@@ -263,17 +262,27 @@ images.forEach((img, i)=>{
   const mesh = new THREE.Mesh(geometry, material);
 
   // 🌌 LETAK IKUT ORBIT (BUKAN TENGAH)
-  const angle = i * (Math.PI * 2 / images.length);
-  const radius = 5 + Math.random() * 6;
+  const branches = 3;
+  const branch = i % branches;
 
-  mesh.position.x = Math.cos(angle) * radius;
-  mesh.position.z = Math.sin(angle) * radius;
-  mesh.position.y = (Math.random() - 0.5) * 2;
+const angle = (i * 0.15) + (branch * Math.PI * 2 / branches);
 
-  mesh.lookAt(camera.position);
+// 🔥 spiral lebih padat & tebal
+const radius = Math.random() * 8;
 
-  scene.add(mesh);
-  imageMeshes.push(mesh);
+// 🔥 bentuk spiral
+const spin = radius * 1.5;
+
+positions[i3] = Math.cos(angle + spin) * radius;
+positions[i3+2] = Math.sin(angle + spin) * radius;
+
+if(radius < 1.5){
+  positions[i3] *= 0.3;
+  positions[i3+2] *= 0.3;
+}  
+
+// 🔥 bagi tebal (tak flat)
+positions[i3+1] = (Math.random() - 0.5) * 1.5;
 });
 
 /* 🎯 CLICK SYSTEM */
