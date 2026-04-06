@@ -245,7 +245,7 @@ const mat = new THREE.PointsMaterial({
 const galaxy = new THREE.Points(geo, mat);
 scene.add(galaxy);
   
-/* 🔐 LOCK IMAGE CENTER */
+/* 🔐 LOCK DI TENGAH */
 const lockTexture = new THREE.TextureLoader().load('lock.png');
 
 const lockMaterial = new THREE.MeshBasicMaterial({
@@ -253,12 +253,14 @@ const lockMaterial = new THREE.MeshBasicMaterial({
   transparent: true
 });
 
-const lockGeometry = new THREE.PlaneGeometry(2.5, 2.5);
+const lockGeometry = new THREE.PlaneGeometry(2, 2);
 const lockMesh = new THREE.Mesh(lockGeometry, lockMaterial);
 
+// 📍 posisi tengah galaxy
 lockMesh.position.set(0, 0, 0);
-scene.add(lockMesh);
 
+scene.add(lockMesh);
+  
 /* ❤️ RANDOM IMAGE DALAM GALAXY */
 const loader = new THREE.TextureLoader();
 const imageMeshes = [];
@@ -310,6 +312,14 @@ const mouse = new THREE.Vector2();
   const hit = raycaster.intersectObjects([...imageMeshes, lockMesh]);
 
   if(hit.length > 0){
+
+  if(hit[0].object === lockMesh){
+    goNextPart2();
+  } else {
+    spawnLove(hit[0].object.position);
+  }
+
+}
 
   // 🔐 kalau klik lock → next
   if(hit[0].object === lockMesh){
@@ -371,6 +381,8 @@ function animate(){
   requestAnimationFrame(animate);
 
   galaxy.rotation.y += 0.0008;
+
+  lockMesh.lookAt(camera.position);
 
   // 🔐 floating effect
   lockMesh.position.y = Math.sin(Date.now() * 0.002) * 0.5;
