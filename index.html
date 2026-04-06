@@ -15,20 +15,11 @@
       text-align: center;
     }
 
-    .webgl {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      z-index: 1;
-    }
-
     #login {
       position: absolute;
       top: 40%;
       width: 100%;
+      transition: opacity 1s;
       z-index: 10;
     }
 
@@ -36,17 +27,37 @@
       font-family: 'Great Vibes', cursive;
       font-size: 48px;
       color: #ff4d6d;
+      text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
+      margin-bottom: 20px;
     }
 
     input {
-      padding: 12px;
-      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 12px;
       border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ff4d6d;
+      text-shadow: 0 0 8px rgba(255, 77, 109, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
       text-align: center;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #ff4d6d;
+    }
+
+    input::placeholder {
+      color: #ff85a2;
+      opacity: 0.7;
     }
 
     button {
       padding: 10px 20px;
+      border: none;
       border-radius: 10px;
       background: pink;
       cursor: pointer;
@@ -85,7 +96,9 @@
 
     .wish {
       position: absolute;
-      color: pink;
+      font-family: 'Great Vibes', cursive;
+      color: #ff85c1;
+      text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
       animation: wishPop 4s ease-out forwards;
     }
 
@@ -98,8 +111,10 @@
       position: fixed;
       bottom: 30px;
       right: 30px;
+      font-family: 'Great Vibes', cursive;
       font-size: 28px;
       color: #ff69b4;
+      text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
       opacity: 0;
       transition: 1s;
       z-index: 100;
@@ -108,13 +123,20 @@
     #nextBtn.show {
       opacity: 1;
     }
+
+    /* 👉 TAMBAH SAHAJA */
+    .webgl {
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: none;
+      z-index: 1;
+    }
   </style>
 
 </head>
 
 <body>
-
-<canvas class="webgl"></canvas>
 
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
@@ -134,8 +156,11 @@
   <source src="song.mp3">
 </audio>
 
-<script type="module">
+<!-- 🌌 TAMBAH GALAXY -->
 
+<canvas class="webgl"></canvas>
+
+<script type="module">
 import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 
 const canvas = document.querySelector('.webgl');
@@ -148,7 +173,6 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
 renderer.setSize(innerWidth, innerHeight);
 
-// 📸 gambar spiral
 const loader = new THREE.TextureLoader();
 const images = [
   'pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg',
@@ -197,16 +221,13 @@ function moveCamera(){
   requestAnimationFrame(anim);
 }
 
-window.startGalaxy = () => {
-  moveCamera();
-};
+window.startGalaxy = () => moveCamera();
 
 function tick(){
   renderer.render(scene,camera);
   requestAnimationFrame(tick);
 }
 tick();
-
 </script>
 
 <script>
@@ -217,7 +238,7 @@ function check() {
   }
 }
 
-/* MATRIX + COUNTDOWN (UNCHANGED FLOW) */
+/* MATRIX */
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block'; 
@@ -260,7 +281,7 @@ function fadeMusic(){
   },200);
 }
 
-/* EFFECT ORIGINAL KAU */
+/* EFFECT */
 function startEffect(){
   const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
@@ -300,12 +321,10 @@ function startEffect(){
   },10000);
 }
 
-/* 👉 NEXT → GALAXY CINEMATIC */
 function goNext(){
   document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
   document.getElementById('nextBtn').style.display='none';
   document.querySelector('.webgl').style.display='block';
-
   startGalaxy();
 }
 </script>
