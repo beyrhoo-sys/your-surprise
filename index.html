@@ -2,108 +2,81 @@
 <html>
 <head>
   <title>For my beautiful girl ❤️</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-body{
-  margin:0;
-  background: radial-gradient(circle at center,#1a001a,#000);
-  overflow:hidden;
-  font-family:'Poppins',sans-serif;
-  text-align:center;
-  color:white;
+body {
+  margin: 0;
+  background: radial-gradient(circle at center, #1a001a, #000000);
+  overflow: hidden;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
 }
 
-#login{
-  position:absolute;
-  top:40%;
-  width:100%;
-  z-index:10;
+#login {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  z-index: 10;
 }
 
-h2{
-  font-family:'Great Vibes',cursive;
-  font-size:48px;
-  color:#ff4d6d;
-  text-shadow:0 0 20px #ff4d6d,0 0 40px #ff69b4;
+h2 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 48px;
+  color: #ff4d6d;
+  text-shadow: 0 0 15px rgba(255, 77, 109, 0.6);
 }
 
-input{
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  outline:none;
-  background:rgba(255,255,255,0.1);
-  color:#ff69b4;
-  text-align:center;
-  backdrop-filter:blur(10px);
-  box-shadow:0 0 15px rgba(255,105,180,0.4);
+input {
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #ff4d6d;
+  text-shadow: 0 0 8px #ff4d6d;
+  backdrop-filter: blur(10px);
 }
 
-button{
-  padding:10px 20px;
-  border:none;
-  border-radius:10px;
-  background:pink;
-  cursor:pointer;
+button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: pink;
 }
 
-#matrix-phase{
-  position:absolute;
-  inset:0;
-  display:none;
-  z-index:50;
+#matrix-phase {
+  position: absolute;
+  inset: 0;
+  display: none;
+  z-index: 50;
 }
 
-#countdown-num{
-  position:absolute;
-  top:50%;
-  left:50%;
+#countdown-num {
+  position: absolute;
+  top:50%; left:50%;
   transform:translate(-50%,-50%);
   font-size:120px;
   color:#ff69b4;
-  text-shadow:0 0 20px #ff1493,0 0 40px #ff69b4;
   opacity:0;
-  z-index:60;
-}
-
-@keyframes pulse{
-  0%{transform:translate(-50%,-50%) scale(0.5);opacity:0;}
-  50%{transform:translate(-50%,-50%) scale(1.3);opacity:1;}
-  100%{transform:translate(-50%,-50%) scale(1);opacity:0;}
-}
-
-.heart{position:absolute;animation:fall 5s linear forwards;}
-@keyframes fall{to{transform:translateY(110vh);opacity:0;}}
-
-.wish{
-  position:absolute;
-  font-family:'Great Vibes',cursive;
-  color:#ff85c1;
+  text-shadow:0 0 20px #ff1493,0 0 50px #ff69b4;
 }
 
 #nextBtn{
   position:fixed;
   bottom:30px;
   right:30px;
-  font-family:'Great Vibes',cursive;
-  font-size:30px;
+  font-family:'Great Vibes';
+  font-size:32px;
   color:#ff69b4;
-  text-shadow:0 0 15px #ff1493,0 0 40px #ff69b4;
+  text-shadow:0 0 10px #ff1493,0 0 30px #ff69b4;
   opacity:0;
-  transition:1s;
-  z-index:100;
 }
 
 #nextBtn.show{opacity:1;}
 
 .webgl{
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  inset:0;
   display:none;
   z-index:9999;
 }
@@ -115,71 +88,71 @@ button{
 <canvas class="webgl"></canvas>
 
 <div id="login">
-  <h2>Only For Birthday Girl 💌</h2>
-  <input type="password" id="pass">
-  <br><br>
-  <button onclick="check()">Open 💖</button>
+<h2>Only For Birthday Girl 💌</h2>
+<input type="password" id="pass"><br><br>
+<button onclick="check()">Open 💖</button>
 </div>
 
 <div id="matrix-phase">
-  <canvas id="matrixCanvas"></canvas>
+<canvas id="matrixCanvas"></canvas>
 </div>
 
 <div id="countdown-num"></div>
 <div id="nextBtn" onclick="goNext()">next</div>
 
 <audio id="music" loop>
-  <source src="song.mp3">
+<source src="song.mp3">
 </audio>
 
-<!-- 🌌 GALAXY -->
+<!-- 🌌 GALAXY LOVE SPIRAL -->
 <script type="module">
 import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 
-const canvas = document.querySelector('.webgl');
-const scene = new THREE.Scene();
+const canvas=document.querySelector('.webgl');
+const scene=new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
-camera.position.set(0,5,25);
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,100);
+camera.position.set(0,5,20);
 scene.add(camera);
 
-const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
-renderer.setSize(innerWidth, innerHeight);
+const renderer=new THREE.WebGLRenderer({canvas});
+renderer.setSize(innerWidth,innerHeight);
 
-/* ❤️ TEXTURE */
-const loader = new THREE.TextureLoader();
-const heartTexture = loader.load('https://i.imgur.com/7yUvePI.png');
+// ❤️ create emoji texture
+const canvas2=document.createElement('canvas');
+canvas2.width=64; canvas2.height=64;
+const ctx=canvas2.getContext('2d');
+ctx.font="48px serif";
+ctx.fillText("❤️",10,50);
 
-/* 🌌 SPIRAL */
-const count = 20000;
-const positions = new Float32Array(count * 3);
+const texture=new THREE.CanvasTexture(canvas2);
+
+const count=2000;
+const positions=new Float32Array(count*3);
 
 for(let i=0;i<count;i++){
   const i3=i*3;
+  const angle=i*0.3;
+  const radius=0.02*i;
 
-  const radius=Math.random()*10;
-  const spin=radius*2;
-  const branch=(i%4)/4*Math.PI*2;
-
-  positions[i3]=Math.cos(branch+spin)*radius;
-  positions[i3+1]=(Math.random()-0.5)*1.5;
-  positions[i3+2]=Math.sin(branch+spin)*radius;
+  positions[i3]=Math.cos(angle)*radius;
+  positions[i3+1]=(Math.random()-0.5)*2;
+  positions[i3+2]=Math.sin(angle)*radius;
 }
 
-const geometry=new THREE.BufferGeometry();
-geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.BufferAttribute(positions,3));
 
-const material=new THREE.PointsMaterial({
-  size:0.35,
-  map:heartTexture,
-  transparent:true,
-  depthWrite:false
+const mat=new THREE.PointsMaterial({
+  size:0.6,
+  map:texture,
+  transparent:true
 });
 
-const galaxy=new THREE.Points(geometry,material);
+const galaxy=new THREE.Points(geo,mat);
 scene.add(galaxy);
 
-window.startGalaxy=function(){
+window.startGalaxy=()=>{
   animate();
 };
 
@@ -188,131 +161,158 @@ function animate(){
 
   galaxy.rotation.y+=0.002;
 
-  if(camera.position.z>6){
-    camera.position.z-=0.04;
+  if(camera.position.z>8){
+    camera.position.z-=0.05;
   }
 
+  camera.lookAt(0,0,0);
   renderer.render(scene,camera);
 }
 </script>
 
 <script>
 function check(){
-  if(document.getElementById('pass').value==='111498'){
-    document.getElementById('login').style.display='none';
-    startMatrix();
-  }
+if(pass.value==='111498'){
+login.style.display='none';
+startMatrix();
+}
 }
 
 /* MATRIX FIX */
 function startMatrix(){
-  const phase=document.getElementById('matrix-phase');
-  phase.style.display='block';
+const phase=document.getElementById('matrix-phase');
+phase.style.display='block';
+const canvas=document.getElementById('matrixCanvas');
+const ctx=canvas.getContext('2d');
 
-  const canvas=document.getElementById('matrixCanvas');
-  const ctx=canvas.getContext('2d');
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
+const chars='アイウエオ0123456789♥';
+const size=14;
+const columns=canvas.width/size;
+const drops=Array.from({length:columns},()=>Math.random()*-50);
 
-  const chars='♥0123456789';
+const interval=setInterval(()=>{
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // ✅ FIX SINI
-  const drops = Array(Math.floor(canvas.width / 14))
-    .fill(0)
-    .map(() => Math.random() * canvas.height / 14);
+ctx.fillStyle="#ff69b4";
+ctx.font=size+"px monospace";
 
-  const interval=setInterval(()=>{
-    ctx.fillStyle="rgba(0,0,0,0.05)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+drops.forEach((y,i)=>{
+const text=chars[Math.random()*chars.length|0];
+ctx.fillText(text,i*size,y*size);
 
-    ctx.fillStyle="#ff69b4";
-    ctx.font="14px monospace";
+if(y*size>canvas.height&&Math.random()>0.97){
+drops[i]=Math.random()*-20;
+}
+drops[i]++;
+});
+},33);
 
-    drops.forEach((y,i)=>{
-      ctx.fillText(chars[Math.random()*chars.length|0],i*14,y*14);
-      if(y*14>canvas.height) drops[i]=0;
-      drops[i]++;
-    });
-  },33);
+setTimeout(()=>{
+runCountdown(3,()=>{
+clearInterval(interval);
+phase.style.display='none';
+startEffect();
+fadeMusic();
+});
+},1500);
+}
 
-  setTimeout(()=>{
-    clearInterval(interval);
-    document.getElementById('matrix-phase').style.display='none';
-    startEffect();
-    fadeMusic();
-  },3000);
+/* COUNTDOWN FIX */
+function runCountdown(n,cb){
+const el=document.getElementById('countdown-num');
+
+function show(num,done){
+el.innerText=num;
+el.style.opacity=1;
+
+setTimeout(()=>{
+el.style.opacity=0;
+setTimeout(done,300);
+},700);
+}
+
+function next(){
+if(n<1)return cb();
+show(n--,()=>setTimeout(next,200));
+}
+next();
 }
 
 function fadeMusic(){
-  const m=document.getElementById('music');
-  m.volume=0;m.play();
-  let v=0;
-  const i=setInterval(()=>{
-    if(v<1){v+=0.05;m.volume=v;} else clearInterval(i);
-  },200);
+music.volume=0;
+music.play();
+let v=0;
+const i=setInterval(()=>{
+if(v<1){v+=0.05;music.volume=v;}
+else clearInterval(i);
+},200);
 }
 
+/* EFFECT KEEP */
 let rainImg,rainHeart,rainWish;
 
 function startEffect(){
-  const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
+const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
-  rainImg=setInterval(()=>{
-    const img=document.createElement('img');
-    img.src=images[Math.random()*images.length|0];
-    img.style.position='absolute';
-    img.style.top='-100px';
-    img.style.left=Math.random()*100+'%';
-    img.style.width=(Math.random()*80+50)+'px';
-    img.style.animation='fall 5s linear';
-    document.body.appendChild(img);
-    setTimeout(()=>img.remove(),5000);
-  },300);
+rainImg=setInterval(()=>{
+const img=document.createElement('img');
+img.src=images[Math.random()*images.length|0];
+img.style.position='absolute';
+img.style.top='-100px';
+img.style.left=Math.random()*100+'%';
+img.style.width=(Math.random()*80+50)+'px';
+img.style.animation='fall 5s linear';
+document.body.appendChild(img);
+setTimeout(()=>img.remove(),5000);
+},300);
 
-  rainHeart=setInterval(()=>{
-    let h=document.createElement("div");
-    h.className="heart";
-    h.innerHTML="❤️";
-    h.style.left=Math.random()*100+"%";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
-  },200);
+rainHeart=setInterval(()=>{
+let h=document.createElement("div");
+h.innerHTML="❤️";
+h.style.position="absolute";
+h.style.left=Math.random()*100+"%";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),5000);
+},200);
 
-  rainWish=setInterval(()=>{
-    const t=document.createElement('div');
-    t.className='wish';
-    t.innerHTML='happy birthday sayang ♥️';
-    t.style.left=Math.random()*100+'%';
-    t.style.top=Math.random()*80+'%';
-    document.body.appendChild(t);
-    setTimeout(()=>t.remove(),4000);
-  },500);
+rainWish=setInterval(()=>{
+const t=document.createElement('div');
+t.innerHTML='happy birthday sayang ♥️';
+t.style.position='absolute';
+t.style.left=Math.random()*100+'%';
+t.style.top=Math.random()*80+'%';
+document.body.appendChild(t);
+setTimeout(()=>t.remove(),4000);
+},500);
 
-  setTimeout(()=>{
-    document.getElementById('nextBtn').classList.add('show');
-  },10000);
+setTimeout(()=>{
+nextBtn.classList.add('show');
+},10000);
 }
 
 /* NEXT */
 function goNext(){
+clearInterval(rainImg);
+clearInterval(rainHeart);
+clearInterval(rainWish);
 
-  clearInterval(rainImg);
-  clearInterval(rainHeart);
-  clearInterval(rainWish);
+document.querySelectorAll('img,div').forEach(el=>{
+if(el.className==='heart'||el.className==='wish') el.remove();
+});
 
-  document.querySelectorAll('.heart,.wish,img').forEach(el=>el.remove());
+nextBtn.style.display='none';
 
-  document.getElementById('nextBtn').style.display='none';
+const g=document.querySelector('.webgl');
+g.style.display='block';
+document.body.style.background="black";
 
-  document.body.style.background='black';
-
-  const g=document.querySelector('.webgl');
-  g.style.display='block';
-
-  setTimeout(()=>{
-    startGalaxy();
-  },200);
+setTimeout(()=>{
+startGalaxy();
+},200);
 }
 </script>
 
