@@ -238,46 +238,30 @@ const imageMeshes = [];
 
 const images = ['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
 
-images.forEach((img)=>{
+images.forEach((img, i)=>{
   const tex = loader.load(img);
 
   const material = new THREE.MeshBasicMaterial({
     map: tex,
-    transparent:true
+    transparent: true,
+    opacity: 0.85
   });
 
-  const geometry = new THREE.PlaneGeometry(2,2);
+  // 🔥 SIZE KECIK (IMPORTANT)
+  const size = Math.random() * 0.8 + 0.5;
+  const geometry = new THREE.PlaneGeometry(size, size);
+
   const mesh = new THREE.Mesh(geometry, material);
 
-  // RANDOM POSITION DALAM GALAXY
-  images.forEach((img, i)=>{
-  const tex = loader.load(img);
+  // 🌌 LETAK IKUT ORBIT (BUKAN TENGAH)
+  const angle = i * (Math.PI * 2 / images.length);
+  const radius = 5 + Math.random() * 6;
 
-  const material = new THREE.MeshBasicMaterial({
-    map: tex,
-    transparent:true
-  });
+  mesh.position.x = Math.cos(angle) * radius;
+  mesh.position.z = Math.sin(angle) * radius;
+  mesh.position.y = (Math.random() - 0.5) * 2;
 
-  const geometry = new THREE.PlaneGeometry(2,2);
-  const mesh = new THREE.Mesh(geometry, material);
-
-  // 🔥 ambil position dari galaxy points
-  const index = Math.floor(Math.random() * (count - 1));
-
-  mesh.position.set(
-    positions[index * 3],
-    positions[index * 3 + 1],
-    positions[index * 3 + 2]
-  );
-
-  // 🔥 face camera (nampak cantik)
   mesh.lookAt(camera.position);
-
-  scene.add(mesh);
-  imageMeshes.push(mesh);
-});
-
-  mesh.lookAt(0,0,0);
 
   scene.add(mesh);
   imageMeshes.push(mesh);
@@ -287,7 +271,11 @@ images.forEach((img)=>{
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-window.addEventListener('click', (event)=>{
+  window.addEventListener('click', (event)=>{
+
+  // ❌ ignore kalau galaxy belum buka
+  if(document.querySelector('.webgl').style.display !== 'block') return;
+
   mouse.x = (event.clientX / innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / innerHeight) * 2 + 1;
 
@@ -298,7 +286,7 @@ window.addEventListener('click', (event)=>{
     spawnLove(hit[0].object.position);
   }
 });
-
+  
 /* 💌 LOVE EFFECT (SPAWN BANYAK + FADE) */
 function spawnLove(pos){
   for(let i=0;i<5;i++){
