@@ -1,5 +1,4 @@
-<!DOCTYPE html> 
-
+<!DOCTYPE html>
 <html>
 <head>
   <title>For my beautiful girl ❤️</title>
@@ -50,11 +49,6 @@
       z-index: 50;
     }
 
-    canvas {
-      width: 100%;
-      height: 100%;
-    }
-
     #countdown-num {
       position: absolute;
       top: 50%; left: 50%;
@@ -78,7 +72,6 @@
       position: absolute;
       font-family: 'Great Vibes', cursive;
       color: #ff85c1;
-      text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
       animation: wishPop 4s ease-out forwards;
     }
 
@@ -91,18 +84,17 @@
       position: fixed;
       bottom: 30px;
       right: 30px;
-      font-family: 'Great Vibes', cursive;
       font-size: 28px;
       color: #ff69b4;
-      text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
       opacity: 0;
-      transition: 1s;
       z-index: 100;
     }
 
-    #nextBtn.show { opacity: 1; }
+    #nextBtn.show {
+      opacity: 1;
+    }
 
-    /* 🌌 GALAXY */
+    /* 🌌 GALAXY FIX */
     .webgl {
       position: fixed;
       top: 0;
@@ -110,13 +102,14 @@
       width: 100%;
       height: 100%;
       display: none;
-      z-index: 999;
+      z-index: 9999; /* 🔥 penting */
     }
   </style>
-
 </head>
 
 <body>
+
+<canvas class="webgl"></canvas>
 
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
@@ -136,10 +129,7 @@
   <source src="song.mp3">
 </audio>
 
-<canvas class="webgl"></canvas>
-
-<!-- 🌌 GALAXY (NO IMAGE) -->
-
+<!-- 🌌 THREE JS -->
 <script type="module">
 import * as THREE from 'https://cdn.skypack.dev/three@0.150.0';
 
@@ -147,82 +137,58 @@ const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 100);
-camera.position.z = 8;
+camera.position.set(10,10,20);
+scene.add(camera);
 
 const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
 renderer.setSize(innerWidth, innerHeight);
 
-// particles galaxy
-const count = 2000;
-const pos = new Float32Array(count * 3);
+const count = 20000;
+const positions = new Float32Array(count * 3);
 
 for(let i=0;i<count;i++){
-  let i3=i*3;
-  let r=Math.random()*5;
-  let a=r*1.5;
+  const i3 = i*3;
+  const radius = Math.random()*10;
+  const angle = radius * 2;
 
-  pos[i3]=Math.cos(a)*r;
-  pos[i3+1]=(Math.random()-0.5)*2;
-  pos[i3+2]=Math.sin(a)*r;
+  positions[i3] = Math.cos(angle)*radius;
+  positions[i3+1] = (Math.random()-0.5)*2;
+  positions[i3+2] = Math.sin(angle)*radius;
 }
 
-const geo = new THREE.BufferGeometry();
-geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+const geometry = new THREE.BufferGeometry();
+geometry.setAttribute('position', new THREE.BufferAttribute(positions,3));
 
-const mat = new THREE.PointsMaterial({
-  size:0.05,
-  color:'#ff69b4'
+const material = new THREE.PointsMaterial({
+  size: 0.1,
+  color: '#ff69b4'
 });
 
-const galaxy = new THREE.Points(geo,mat);
+const galaxy = new THREE.Points(geometry, material);
 scene.add(galaxy);
 
-function tick(){
-  galaxy.rotation.y += 0.002;
-  renderer.render(scene,camera);
-  requestAnimationFrame(tick);
-}
-tick();
-
-window.startGalaxy = () => {
-  let start=performance.now();
-  let startZ=camera.position.z;
-
-  function zoom(t){
-    let p=(t-start)/2000;
-    if(p<1){
-      camera.position.z = startZ - p*4;
-      requestAnimationFrame(zoom);
-    }
-  }
-  requestAnimationFrame(zoom);
+// 🔥 GLOBAL FUNCTION (IMPORTANT)
+window.startGalaxy = function(){
+  animate();
 };
+
+function animate(){
+  requestAnimationFrame(animate);
+
+  galaxy.rotation.y += 0.002;
+
+  if(camera.position.z > 8){
+    camera.position.z -= 0.05;
+  }
+
+  camera.lookAt(0,0,0);
+
+  renderer.render(scene,camera);
+}
 </script>
 
+<!-- 🌙 MAIN SCRIPT -->
 <script>
-
-/* COUNTDOWN */
-function runCountdown(n, cb) {
-  const el = document.getElementById('countdown-num');
-
-  function show(num, done){
-    el.textContent=num;
-    el.style.opacity=1;
-
-    setTimeout(()=>{
-      el.style.opacity=0;
-      setTimeout(done,300);
-    },700);
-  }
-
-  function next(){
-    if(n<1) return cb();
-    show(n--,()=>setTimeout(next,150));
-  }
-
-  next();
-}
-
 function check() {
   if (document.getElementById('pass').value === '111498') {
     document.getElementById('login').style.display = 'none';
@@ -234,40 +200,36 @@ function check() {
 function startMatrix() {
   const phase = document.getElementById('matrix-phase');
   phase.style.display = 'block'; 
-
   const canvas = document.getElementById('matrixCanvas');
   const ctx = canvas.getContext('2d');
 
   canvas.width = innerWidth;
   canvas.height = innerHeight;
 
+  const chars = '♥0123456789';
   const drops = Array(Math.floor(canvas.width / 14)).fill(1);
 
   const interval = setInterval(()=>{
     ctx.fillStyle="rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
-
     ctx.fillStyle="#ff69b4";
     ctx.font="14px monospace";
 
     drops.forEach((y,i)=>{
-      ctx.fillText("♥", i*14, y*14);
+      ctx.fillText(chars[Math.random()*chars.length|0], i*14, y*14);
       if(y*14>canvas.height) drops[i]=0;
       drops[i]++;
     });
   },33);
 
   setTimeout(()=>{
-    runCountdown(3, () => {
-      clearInterval(interval);
-      phase.style.display='none';
-      startEffect();
-      fadeMusic();
-    });
-  },1500);
+    clearInterval(interval);
+    document.getElementById('matrix-phase').style.display='none';
+    startEffect();
+    fadeMusic();
+  },3000);
 }
 
-/* MUSIC */
 function fadeMusic(){
   const m=document.getElementById('music');
   m.volume=0; m.play();
@@ -277,7 +239,7 @@ function fadeMusic(){
   },200);
 }
 
-/* EFFECT (UNCHANGED) */
+/* EFFECT */
 let rainImg, rainHeart, rainWish;
 
 function startEffect(){
@@ -319,18 +281,28 @@ function startEffect(){
   },10000);
 }
 
-/* 👉 NEXT (GALAXY OVERLAY ONLY) */
+/* 👉 NEXT → GALAXY FIXED */
 function goNext(){
+
+  clearInterval(rainImg);
+  clearInterval(rainHeart);
+  clearInterval(rainWish);
+
+  document.querySelectorAll('.heart, .wish, img').forEach(el=>el.remove());
+
   document.getElementById('nextBtn').style.display='none';
 
   const g = document.querySelector('.webgl');
   g.style.display='block';
 
   setTimeout(()=>{
-    startGalaxy();
-  },100);
+    if(window.startGalaxy){
+      window.startGalaxy();
+    } else {
+      alert("Galaxy tak load");
+    }
+  },200);
 }
-
 </script>
 
 </body>
