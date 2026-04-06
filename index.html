@@ -154,6 +154,9 @@ button {
 <!-- 🌌 GALAXY FIXED -->
 <script type="module">
 import * as THREE from 'https://unpkg.com/three@0.150.0/build/three.module.js';
+import { EffectComposer } from 'https://unpkg.com/three@0.150.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://unpkg.com/three@0.150.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://unpkg.com/three@0.150.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
@@ -164,21 +167,31 @@ camera.position.set(0,5,20);
 scene.add(camera);
 
 /* RENDERER */
-const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
-  alpha: false
-});
+const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(innerWidth, innerHeight);
-renderer.setClearColor("#000000", 1);
+renderer.setClearColor("#000000");
+
+/* 🔥 BLOOM EFFECT */
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+const bloom = new UnrealBloomPass(
+  new THREE.Vector2(innerWidth, innerHeight),
+  1.5, // strength
+  0.4, // radius
+  0.85 // threshold
+);
+composer.addPass(bloom);
 
 /* RESIZE */
 window.addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
 });
 
-/* ❤️ TEXTURE */
+/* ❤️ LOVE TEXTURE */
 const c = document.createElement('canvas');
 c.width = 64;
 c.height = 64;
@@ -189,21 +202,50 @@ ctx.textAlign = "center";
 ctx.textBaseline = "middle";
 ctx.fillText("❤️", 32, 32);
 
-const texture = new THREE.CanvasTexture(c);
+const loveTexture = new THREE.CanvasTexture(c);
+
+/* 🖼️ LOAD GAMBAR */
+const loader = new THREE.TextureLoader();
+const images = [
+  'pic1.jpg',
+  'pic2.jpg',
+  'pic3.jpg',
+  'pic4.jpg'
+];
+
+const imageMeshes = [];
 
 /* 🌌 SPIRAL */
-const count = 4000;
+const count = 2000;
 const positions = new Float32Array(count * 3);
 
 for(let i=0;i<count;i++){
   const i3 = i*3;
-
   const angle = i * 0.25;
   const radius = 0.01 * i;
 
   positions[i3] = Math.cos(angle)*radius;
   positions[i3+1] = (Math.random()-0.5)*2;
   positions[i3+2] = Math.sin(angle)*radius;
+
+  /* 📸 SELIT GAMBAR SETIAP BEBERAPA POINT */
+  if(i % 200 === 0){
+    const tex = loader.load(images[(i/200)%images.length]);
+
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2,2),
+      new THREE.MeshBasicMaterial({ map: tex, transparent:true })
+    );
+
+    mesh.position.set(
+      positions[i3],
+      positions[i3+1],
+      positions[i3+2]
+    );
+
+    scene.add(mesh);
+    imageMeshes.push(mesh);
+  }
 }
 
 const geo = new THREE.BufferGeometry();
@@ -211,7 +253,7 @@ geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
 
 const mat = new THREE.PointsMaterial({
   size: 0.5,
-  map: texture,
+  map: loveTexture,
   transparent: true,
   depthWrite: false
 });
@@ -219,7 +261,7 @@ const mat = new THREE.PointsMaterial({
 const galaxy = new THREE.Points(geo, mat);
 scene.add(galaxy);
 
-/* 🎮 SIMPLE CONTROL (DRAG + SCROLL) */
+/* 🎮 SIMPLE CONTROL */
 let isDragging = false;
 let prevX = 0;
 
@@ -240,7 +282,6 @@ canvas.addEventListener('mousemove', (e)=>{
 /* ZOOM */
 window.addEventListener('wheel', (e)=>{
   camera.position.z += e.deltaY * 0.01;
-
   if(camera.position.z < 5) camera.position.z = 5;
   if(camera.position.z > 40) camera.position.z = 40;
 });
@@ -259,12 +300,18 @@ function animate(){
 
   galaxy.rotation.y += 0.002;
 
+  imageMeshes.forEach(m=>{
+    m.lookAt(camera.position);
+  });
+
   if(camera.position.z > 8){
     camera.position.z -= 0.03;
   }
 
   camera.lookAt(0,0,0);
-  renderer.render(scene,camera);
+
+  /* 🔥 RENDER BLOOM */
+  composer.render();
 }
 </script>
 
