@@ -246,11 +246,22 @@ const galaxy = new THREE.Points(geo, mat);
 scene.add(galaxy);
   
 /* 🔐 LOCK DI TENGAH */
-const lockTexture = new THREE.TextureLoader().load('lock.png');
+const c2 = document.createElement('canvas');
+c2.width = 128;
+c2.height = 128;
+
+const ctx2 = c2.getContext('2d');
+ctx2.font = "100px serif";
+ctx2.textAlign = "center";
+ctx2.textBaseline = "middle";
+ctx2.fillText("🔐", 64, 64);
+
+const lockTexture = new THREE.CanvasTexture(c2);
 
 const lockMaterial = new THREE.MeshBasicMaterial({
   map: lockTexture,
-  transparent: true
+  transparent: true,
+  depthTest: false
 });
 
 const lockGeometry = new THREE.PlaneGeometry(2, 2);
@@ -320,12 +331,6 @@ const mouse = new THREE.Vector2();
   }
 
 }
-
-  // 🔐 kalau klik lock → next
-  if(hit[0].object === lockMesh){
-    goNextPart2(); // function baru
-    return;
-  }
 
   // ❤️ klik gambar → love effect
   spawnLove(hit[0].object.position);
@@ -407,21 +412,17 @@ window.addEventListener('resize', ()=>{
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+});
 
-  function goNextPart2(){
-
-  // fade keluar galaxy
+function goNextPart2(){
   document.querySelector('.webgl').style.opacity = 0;
 
   setTimeout(()=>{
     alert("Unlocked ❤️");
-
-    // nanti kau boleh tukar:
+    // nanti boleh redirect sini
     // window.location.href = "next.html";
-
   },800);
 }
-});
 </script>
 
 <script>
