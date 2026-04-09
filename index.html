@@ -12,9 +12,7 @@ body {
   font-family: 'Poppins', sans-serif;
   text-align: center;
 }
-#login {
-  position: absolute; top: 40%; width: 100%; z-index: 10;
-}
+#login { position: absolute; top: 40%; width: 100%; z-index: 10; }
 h2 {
   font-family: 'Great Vibes', cursive; font-size: 48px; color: #ff4d6d;
   text-shadow: 0 0 15px rgba(255,77,109,0.6);
@@ -41,7 +39,6 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; }
   position: absolute; font-family: 'Great Vibes'; color: #ff85c1;
   text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
 }
-/* next button untuk rain effect */
 #nextBtn {
   position: fixed; bottom: 30px; right: 30px;
   font-family: 'Great Vibes'; font-size: 32px; color: #ff69b4;
@@ -49,21 +46,11 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; }
   opacity: 0; cursor: pointer; z-index: 99; transition: opacity 1.5s;
 }
 #nextBtn.show { opacity: 1; }
-/* next button galaxy — kat tengah screen, atas heart */
 #galaxyNext {
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: 'Great Vibes', cursive;
-  font-size: 52px;
-  color: #ff69b4;
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: 'Great Vibes', cursive; font-size: 52px; color: #ff69b4;
   text-shadow: 0 0 15px #ff1493, 0 0 35px #ff69b4, 0 0 60px #ff4d6d;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 99;
-  display: none;
-  transition: opacity 1s;
-  pointer-events: auto;
+  opacity: 0; cursor: pointer; z-index: 99; display: none; transition: opacity 1s;
 }
 #galaxyNext.show { opacity: 1; }
 .webgl { position: fixed; inset: 0; display: none; z-index: 1; }
@@ -72,7 +59,6 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; }
 <body>
 
 <canvas class="webgl"></canvas>
-
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
   <input type="password" id="pass">
@@ -82,9 +68,7 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; }
 <div id="matrix-phase"><canvas id="matrixCanvas"></canvas></div>
 <div id="countdown-num"></div>
 <div id="nextBtn" onclick="goNext()">next</div>
-<!-- Galaxy next — center screen -->
 <div id="galaxyNext" onclick="goNextPart2Galaxy()">next ❤️</div>
-
 <audio id="music" loop><source src="song.mp3"></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -94,14 +78,14 @@ var galaxyStarted = false;
 function goNextPart2Galaxy() {
   var gn = document.getElementById('galaxyNext');
   gn.classList.remove('show');
-  setTimeout(function(){ gn.style.display='none'; }, 600);
+  setTimeout(function(){ gn.style.display='none'; },600);
   var canvas = document.querySelector('.webgl');
   canvas.style.transition = 'opacity 1s';
   canvas.style.opacity = '0';
   setTimeout(function(){
     alert('Unlocked ❤️');
     // window.location.href = 'next.html';
-  }, 1000);
+  },1000);
 }
 
 function startGalaxy() {
@@ -114,16 +98,14 @@ function startGalaxy() {
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 500);
-  // Start jauh
   camera.position.set(0, 7, 44);
-  camera.lookAt(0, 0, 0);
 
   var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
   renderer.setSize(innerWidth, innerHeight);
   renderer.setClearColor('#00000a');
 
   /* ⭐ BINTANG */
-  var sPos = new Float32Array(5000*3);
+  var sPos = new Float32Array(15000);
   for (var i=0;i<15000;i++) sPos[i]=(Math.random()-0.5)*400;
   var sGeo = new THREE.BufferGeometry();
   sGeo.setAttribute('position',new THREE.BufferAttribute(sPos,3));
@@ -188,14 +170,13 @@ function startGalaxy() {
     depthWrite:false,transparent:true,opacity:1.0
   }));
   scene.add(heartCenter);
-
   var heartHitbox=new THREE.Mesh(
     new THREE.SphereGeometry(1.4,8,8),
     new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false})
   );
   scene.add(heartHitbox);
 
-  /* ✍️ TEKS DALAM SCENE */
+  /* ✍️ TEKS */
   function makeText(l1,l2) {
     var c=document.createElement('canvas');
     c.width=1024; c.height=220;
@@ -247,47 +228,49 @@ function startGalaxy() {
     imgGroups.push(group);
   });
 
-  /*
-    ZOOM FLOW:
-    Phase 1 (0-3s):   Zoom in LAJU terus ke heart — z=44→z=1.8, y=7→y=0
-    Phase 2 (3-7s):   Zoom out — z=1.8→z=46, y=0→y=9  | teks fade in
-    Phase 3 (7-11s):  Zoom in ke posisi dalam spiral (macam screenshot) — z=46→z=9, y=9→y=0.5
-    Phase 4 (11-21s): Stay, rotate, gambar lalu — z kekal ~9
-    Phase 5 (21s):    Zoom transition laju ke heart — z=9→z=1.5
-    Phase 6 (22s):    "next" pop kat tengah
-  */
-
-  var tZ=44, tY=7;
+  /* CAMERA TARGET — ini yang buat drift nampak
+     Camera position + lookAt target bergerak bersama = scene nampak shift/melencong */
+  var camPos  = { x:0, y:7,  z:44 };  // target position
+  var camLook = { x:0, y:0,  z:0  };  // target lookAt
+  var lerpSpeed = 0.030;
   var rotSpeed=0, rotY=0;
-  var phase=0;
-  var lerpSpeed=0.012;
+  var textActive=false, textFadeOut=false;
 
-  // Phase 1: zoom in laju ke heart
-  phase=1; tZ=1.8; tY=0; lerpSpeed=0.025;
+  // Phase 1 — zoom in laju ke heart
+  camPos.z=1.8; camPos.y=0; camPos.x=0;
+  camLook.x=0; camLook.y=0;
 
-  // Phase 2: zoom out, teks muncul
+
+  // Phase 2 (3s-7s) — zoom out + boomerang arc
+  var arcActive=false, arcStart=0;
   setTimeout(function(){
-    phase=2; tZ=46; tY=9; lerpSpeed=0.012;
+    lerpSpeed=0.013;
+    camPos.z=46; camPos.y=9;
+    arcActive=true; arcStart=Date.now();
     textActive=true;
   },3000);
 
-  // Phase 3: zoom dalam spiral (posisi screenshot)
+  // Phase 3 (7s) — zoom masuk spiral
   setTimeout(function(){
-    phase=3; tZ=9; tY=0.5; lerpSpeed=0.010;
+    arcActive=false;
+    camPos.x=0; camLook.x=0; camLook.y=0;
+    lerpSpeed=0.010;
+    camPos.z=9; camPos.y=0.5;
     textFadeOut=true;
   },7000);
-
-  // Phase 4: stay, rotate start
+  // Phase 4 (11s) — stay, rotate
   setTimeout(function(){
-    phase=4; rotSpeed=0.005;
+    rotSpeed=0.005;
   },11000);
 
-  // Phase 5: zoom transition laju ke heart
+  // Phase 5 (21s) — zoom laju ke heart
   setTimeout(function(){
-    phase=5; tZ=1.5; tY=0; lerpSpeed=0.035;
+    lerpSpeed=0.035;
+    camPos.z=1.5; camPos.y=0; camPos.x=0;
+    camLook.x=0; camLook.y=0;
   },21000);
 
-  // Phase 6: next pop kat tengah
+  // Phase 6 (22.5s) — next pop
   setTimeout(function(){
     var gn=document.getElementById('galaxyNext');
     gn.style.display='block';
@@ -305,20 +288,19 @@ function startGalaxy() {
     if(e.touches.length===2 && lastPinch){
       var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
         e.touches[0].clientY-e.touches[1].clientY);
-      tZ=Math.max(1.2,Math.min(60,tZ+(lastPinch-d)*0.07));
+      camPos.z=Math.max(1.2,Math.min(60,camPos.z+(lastPinch-d)*0.07));
       lastPinch=d;
     }
   },{passive:true});
   canvas.addEventListener('touchend',function(){lastPinch=null;},{passive:true});
   canvas.addEventListener('wheel',function(e){
-    tZ=Math.max(1.2,Math.min(60,tZ+e.deltaY*0.015));
+    camPos.z=Math.max(1.2,Math.min(60,camPos.z+e.deltaY*0.015));
   },{passive:true});
 
   /* 🎯 TAP */
   var raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2();
   var allImgMeshes=[];
   imgGroups.forEach(function(g){allImgMeshes.push(g.children[1]);});
-
   function onTap(cx,cy){
     if(canvas.style.display!=='block') return;
     mouse.x=(cx/innerWidth)*2-1;
@@ -355,12 +337,33 @@ function startGalaxy() {
   }
 
   /* 🔁 ANIMATE */
+  // Camera position & lookAt current (smooth lerp)
+  var curPos  = { x:0, y:7,  z:44 };
+  var curLook = { x:0, y:0,  z:0  };
+
   function animate(){
     requestAnimationFrame(animate);
 
-    camera.position.z+=(tZ-camera.position.z)*lerpSpeed;
-    camera.position.y+=(tY-camera.position.y)*lerpSpeed;
-    camera.lookAt(0,0,0);
+    // Boomerang arc — sin curve, x goes 0→peak→0 over arcDuration
+    if(arcActive){
+      var elapsed=Date.now()-arcStart;
+      var t=Math.min(elapsed/4000,1);
+      camPos.x=Math.sin(t*Math.PI)*-20;
+      camLook.x=Math.sin(t*Math.PI)*-9;
+      camLook.y=Math.sin(t*Math.PI)*2;
+    }
+
+    // Lerp camera position
+    curPos.x += (camPos.x - curPos.x) * lerpSpeed;
+    curPos.y += (camPos.y - curPos.y) * lerpSpeed;
+    curPos.z += (camPos.z - curPos.z) * lerpSpeed;
+
+    // Lerp lookAt target
+    curLook.x += (camLook.x - curLook.x) * lerpSpeed;
+    curLook.y += (camLook.y - curLook.y) * lerpSpeed;
+
+    camera.position.set(curPos.x, curPos.y, curPos.z);
+    camera.lookAt(curLook.x, curLook.y, curLook.z);
 
     // Rotate
     rotY+=rotSpeed;
@@ -374,16 +377,13 @@ function startGalaxy() {
       g.lookAt(camera.position);
     });
 
-    // Heart pulse
     var pulse=1+Math.sin(Date.now()*0.003)*0.09;
     heartCenter.scale.set(pulse,pulse,pulse);
 
-    // Text fade in (phase 2)
     if(textActive && !textFadeOut && textOpacity<1){
       textOpacity+=0.006;
       textMesh.material.opacity=Math.min(textOpacity,1);
     }
-    // Text fade out (phase 3+)
     if(textFadeOut && textOpacity>0){
       textOpacity-=0.01;
       textMesh.material.opacity=Math.max(textOpacity,0);
