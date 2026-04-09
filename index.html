@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>For my beautiful girl ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
 <style>
 body {
@@ -74,8 +75,8 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; border: none
 /* Envelope wrapper */
 #envelope-wrap {
   position: relative;
-  width: min(340px, 88vw);
-  height: 420px;
+  width: min(300px, 82vw);
+  height: 380px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -139,10 +140,10 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; border: none
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 24px);
+  width: calc(100% - 20px);
   background: linear-gradient(160deg, #f5e6d3 0%, #ede0cc 60%, #e8d5b7 100%);
   border-radius: 6px;
-  padding: 28px 24px 24px;
+  padding: 20px 18px 18px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   z-index: 2;
   text-align: center;
@@ -153,7 +154,7 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; border: none
 }
 #invite-card.rise {
   opacity: 1;
-  transform: translateX(-50%) translateY(-190px);
+  transform: translateX(-50%) translateY(-130px);
 }
 
 /* Card content */
@@ -167,9 +168,9 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; border: none
 }
 .card-title {
   font-family: 'Great Vibes', cursive;
-  font-size: clamp(26px, 7vw, 36px);
+  font-size: clamp(22px, 6vw, 30px);
   color: #2a1a0a;
-  margin: 6px 0 14px;
+  margin: 4px 0 10px;
   line-height: 1.2;
 }
 .card-divider {
@@ -280,19 +281,11 @@ function showInvitation() {
   canvas.style.transition = 'opacity 0.8s';
   canvas.style.opacity = '0';
 
-  /* Stop galaxy music, start invitation music */
+  /* Stop galaxy music — NO invitation music yet, wait for let's go */
   var m = document.getElementById('music');
   m.style && (m.volume = 0);
   setTimeout(function(){
     m.pause();
-    var m3 = document.getElementById('music3');
-    m3.volume = 0;
-    m3.play().catch(function(){});
-    var v = 0;
-    var fi = setInterval(function(){
-      if(v < 1){ v += 0.05; m3.volume = Math.min(v, 1); }
-      else clearInterval(fi);
-    }, 150);
   }, 800);
 
   /* Show invitation screen */
@@ -315,7 +308,17 @@ function showInvitation() {
 }
 
 function goToNextPart() {
-  /* Next part — blank for now */
+  /* Start song3.mp3 bila tekan let's go */
+  var m3 = document.getElementById('music3');
+  m3.volume = 0;
+  m3.play().catch(function(){});
+  var v = 0;
+  var fi = setInterval(function(){
+    if(v < 1){ v += 0.06; m3.volume = Math.min(v, 1); }
+    else clearInterval(fi);
+  }, 150);
+
+  /* Fade out invitation screen */
   document.getElementById('invitation-screen').style.transition = 'opacity 1s';
   document.getElementById('invitation-screen').style.opacity = '0';
   setTimeout(function(){
