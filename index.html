@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>For my beautiful girl ❤️</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
 <style>
 body {
   margin: 0;
@@ -12,6 +12,8 @@ body {
   font-family: 'Poppins', sans-serif;
   text-align: center;
 }
+
+/* LOGIN */
 #login { position: absolute; top: 40%; width: 100%; z-index: 10; }
 h2 {
   font-family: 'Great Vibes', cursive; font-size: 48px; color: #ff4d6d;
@@ -26,26 +28,28 @@ input {
 }
 input:focus { box-shadow: 0 0 15px #ff4d6d, 0 0 30px #ff69b4; }
 input::placeholder { color: #ff85a2; opacity: 0.7; }
-button { padding: 10px 20px; border-radius: 10px; background: pink; }
+button { padding: 10px 20px; border-radius: 10px; background: pink; border: none; cursor: pointer; font-size: 16px; }
+
+/* MATRIX */
 #matrix-phase { position: absolute; inset: 0; display: none; z-index: 50; }
 #countdown-num {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   font-size: 120px; color: #ff69b4; z-index: 60; opacity: 0;
   text-shadow: 0 0 20px #ff1493, 0 0 50px #ff69b4;
 }
+
+/* RAIN EFFECT */
 .heart { position: absolute; animation: fall 5s linear forwards; }
 @keyframes fall { to { transform: translateY(110vh); opacity: 0; } }
 .wish {
   position: absolute; font-family: 'Great Vibes'; color: #ff85c1;
   text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
 }
-#nextBtn {
-  position: fixed; bottom: 30px; right: 30px;
-  font-family: 'Great Vibes'; font-size: 32px; color: #ff69b4;
-  text-shadow: 0 0 10px #ff1493, 0 0 30px #ff69b4;
-  opacity: 0; cursor: pointer; z-index: 99; transition: opacity 1.5s;
-}
-#nextBtn.show { opacity: 1; }
+
+/* GALAXY CANVAS */
+.webgl { position: fixed; inset: 0; display: none; z-index: 1; }
+
+/* GALAXY NEXT BUTTON */
 #galaxyNext {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
   font-family: 'Great Vibes', cursive; font-size: 52px; color: #ff69b4;
@@ -53,40 +57,277 @@ button { padding: 10px 20px; border-radius: 10px; background: pink; }
   opacity: 0; cursor: pointer; z-index: 99; display: none; transition: opacity 1s;
 }
 #galaxyNext.show { opacity: 1; }
-.webgl { position: fixed; inset: 0; display: none; z-index: 1; }
+
+/* ═══════════════════════════════
+   INVITATION CARD SCREEN
+═══════════════════════════════ */
+#invitation-screen {
+  position: fixed; inset: 0;
+  background: #0a0a0a;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+#invitation-screen.active { display: flex; }
+
+/* Envelope wrapper */
+#envelope-wrap {
+  position: relative;
+  width: min(340px, 88vw);
+  height: 420px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Envelope body */
+#env-body {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 220px;
+  background: #c4a882;
+  border-radius: 4px 4px 10px 10px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  z-index: 1;
+  overflow: hidden;
+}
+/* Envelope V-fold lines */
+#env-body::before {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 100%;
+  background:
+    linear-gradient(135deg, #b8976e 50%, transparent 50%),
+    linear-gradient(225deg, #b8976e 50%, transparent 50%);
+  background-size: 50% 100%;
+  background-position: left, right;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}
+
+/* Envelope flap */
+#env-flap {
+  position: absolute;
+  bottom: 220px;
+  width: 100%;
+  height: 130px;
+  transform-origin: bottom center;
+  transform: rotateX(0deg);
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+  perspective: 600px;
+}
+#env-flap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #b8976e;
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+  border-radius: 2px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+}
+#env-flap.open {
+  transform: rotateX(-170deg);
+  z-index: 0;
+}
+
+/* The card itself */
+#invite-card {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 24px);
+  background: linear-gradient(160deg, #f5e6d3 0%, #ede0cc 60%, #e8d5b7 100%);
+  border-radius: 6px;
+  padding: 28px 24px 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  z-index: 2;
+  text-align: center;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s;
+  opacity: 0;
+  transform: translateX(-50%) translateY(0px);
+  box-sizing: border-box;
+}
+#invite-card.rise {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-190px);
+}
+
+/* Card content */
+.card-deco {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #8a7055;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-family: 'Cormorant Garamond', serif;
+}
+.card-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(26px, 7vw, 36px);
+  color: #2a1a0a;
+  margin: 6px 0 14px;
+  line-height: 1.2;
+}
+.card-divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, #8a7055, transparent);
+  margin: 0 auto 14px;
+}
+.card-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(13px, 3.5vw, 15px);
+  color: #3a2a18;
+  line-height: 1.85;
+  font-style: italic;
+  text-align: center;
+}
+.card-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #5a4030;
+  margin-top: 12px;
+  letter-spacing: 1px;
+}
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+#lets-go {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(22px, 5vw, 28px);
+  color: #5a3820;
+  border: 1px solid #c4a882;
+  padding: 6px 18px;
+  border-radius: 40px;
+  cursor: pointer;
+  background: rgba(196,168,130,0.15);
+  transition: background 0.3s, color 0.3s;
+  opacity: 0;
+  transition: opacity 0.6s, background 0.3s;
+}
+#lets-go.show { opacity: 1; }
+#lets-go:hover { background: rgba(196,168,130,0.35); color: #2a1a0a; }
+
+/* small wax seal deco */
+.wax-seal {
+  font-size: 22px;
+  margin-bottom: 4px;
+  display: block;
+}
 </style>
 </head>
 <body>
 
 <canvas class="webgl"></canvas>
+
 <div id="login">
   <h2>Only For Birthday Girl 💌</h2>
-  <input type="password" id="pass">
+  <input type="password" id="pass" placeholder="password...">
   <br><br>
   <button onclick="check()">Open 💖</button>
 </div>
+
 <div id="matrix-phase"><canvas id="matrixCanvas"></canvas></div>
 <div id="countdown-num"></div>
-<div id="nextBtn" onclick="goNext()">next</div>
-<div id="galaxyNext" onclick="goNextPart2Galaxy()">next ❤️</div>
-<audio id="music" loop><source src="song.mp3"></audio>
+
+<!-- Galaxy next button -->
+<div id="galaxyNext" onclick="showInvitation()">next ❤️</div>
+
+<!-- Audio - song.mp3 for galaxy, song3.mp3 for invitation -->
+<audio id="music" loop><source src="song.mp3" type="audio/mpeg"></audio>
+<audio id="music3" loop><source src="song3.mp3" type="audio/mpeg"></audio>
+
+<!-- ═══ INVITATION SCREEN ═══ -->
+<div id="invitation-screen">
+  <div id="envelope-wrap">
+    <div id="env-flap"></div>
+    <div id="env-body"></div>
+    <div id="invite-card">
+      <span class="wax-seal">✦</span>
+      <div class="card-deco">— an invitation —</div>
+      <div class="card-title">For The Special One</div>
+      <div class="card-divider"></div>
+      <div class="card-body">
+        You are hereby invited to accompany me<br>
+        on a visit to the<br>
+        <strong style="font-style:normal;font-weight:600;color:#2a1a0a;">Museum of Us.</strong><br><br>
+        Your presence would mean a lot.
+      </div>
+      <div class="card-date">Date &amp; Time &nbsp;·&nbsp; 2 June 2026</div>
+      <div class="card-footer">
+        <div id="lets-go" onclick="goToNextPart()">let's go ›</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-var galaxyStarted = false;
 
-function goNextPart2Galaxy() {
+<!-- ═══ INVITATION LOGIC ═══ -->
+<script>
+function showInvitation() {
+  /* Hide galaxy */
   var gn = document.getElementById('galaxyNext');
   gn.classList.remove('show');
-  setTimeout(function(){ gn.style.display='none'; },600);
+  setTimeout(function(){ gn.style.display='none'; }, 600);
+
   var canvas = document.querySelector('.webgl');
-  canvas.style.transition = 'opacity 1s';
+  canvas.style.transition = 'opacity 0.8s';
   canvas.style.opacity = '0';
+
+  /* Stop galaxy music, start invitation music */
+  var m = document.getElementById('music');
+  m.style && (m.volume = 0);
   setTimeout(function(){
-    alert('Unlocked ❤️');
-    // window.location.href = 'next.html';
-  },1000);
+    m.pause();
+    var m3 = document.getElementById('music3');
+    m3.volume = 0;
+    m3.play().catch(function(){});
+    var v = 0;
+    var fi = setInterval(function(){
+      if(v < 1){ v += 0.05; m3.volume = Math.min(v, 1); }
+      else clearInterval(fi);
+    }, 150);
+  }, 800);
+
+  /* Show invitation screen */
+  setTimeout(function(){
+    var scr = document.getElementById('invitation-screen');
+    scr.classList.add('active');
+    /* Step 1: flap opens */
+    setTimeout(function(){
+      document.getElementById('env-flap').classList.add('open');
+    }, 600);
+    /* Step 2: card rises */
+    setTimeout(function(){
+      document.getElementById('invite-card').classList.add('rise');
+    }, 1500);
+    /* Step 3: let's go appears */
+    setTimeout(function(){
+      document.getElementById('lets-go').classList.add('show');
+    }, 3000);
+  }, 800);
 }
+
+function goToNextPart() {
+  /* Next part — blank for now */
+  document.getElementById('invitation-screen').style.transition = 'opacity 1s';
+  document.getElementById('invitation-screen').style.opacity = '0';
+  setTimeout(function(){
+    document.getElementById('invitation-screen').style.display = 'none';
+    /* → window.location.href = 'next.html'; */
+  }, 1000);
+}
+</script>
+
+<!-- ═══ GALAXY ═══ -->
+<script>
+var galaxyStarted = false;
 
 function startGalaxy() {
   if (galaxyStarted) return;
@@ -228,54 +469,62 @@ function startGalaxy() {
     imgGroups.push(group);
   });
 
-  /* CAMERA TARGET — ini yang buat drift nampak
-     Camera position + lookAt target bergerak bersama = scene nampak shift/melencong */
-  var camPos  = { x:0, y:7,  z:44 };  // target position
-  var camLook = { x:0, y:0,  z:0  };  // target lookAt
+  /*
+    ZOOM FLOW (waktu dari startGalaxy dipanggil):
+    0s   : zoom in ke heart, lerp 0.030
+    ~3s  : tiba dekat heart — STAY 1.5s
+    4.5s : zoom out + boomerang arc (sine curve)
+    8.5s : zoom masuk spiral, teks fade out
+    12.5s: stay, rotate start
+    22.5s: zoom laju ke heart
+    24s  : next pop
+  */
+  var camPos  = { x:0, y:7,  z:44 };
+  var camLook = { x:0, y:0,  z:0  };
+  var curPos  = { x:0, y:7,  z:44 };
+  var curLook = { x:0, y:0,  z:0  };
   var lerpSpeed = 0.030;
   var rotSpeed=0, rotY=0;
-  var textActive=false, textFadeOut=false;
-
-  // Phase 1 — zoom in laju ke heart
-  camPos.z=1.8; camPos.y=0; camPos.x=0;
-  camLook.x=0; camLook.y=0;
-
-
-  // Phase 2 (3s-7s) — zoom out + boomerang arc
   var arcActive=false, arcStart=0;
+
+  /* Phase 1 — zoom in ke heart */
+  camPos.z=1.8; camPos.y=0; camPos.x=0;
+
+  /* Phase 2 (4.5s) — zoom out + boomerang arc */
   setTimeout(function(){
     lerpSpeed=0.013;
     camPos.z=46; camPos.y=9;
     arcActive=true; arcStart=Date.now();
     textActive=true;
-  },3000);
+  },4500);
 
-  // Phase 3 (7s) — zoom masuk spiral
+  /* Phase 3 (8.5s) — zoom masuk spiral */
   setTimeout(function(){
     arcActive=false;
     camPos.x=0; camLook.x=0; camLook.y=0;
     lerpSpeed=0.010;
     camPos.z=9; camPos.y=0.5;
     textFadeOut=true;
-  },7000);
-  // Phase 4 (11s) — stay, rotate
+  },8500);
+
+  /* Phase 4 (12.5s) — stay, rotate start */
   setTimeout(function(){
     rotSpeed=0.005;
-  },11000);
+  },12500);
 
-  // Phase 5 (21s) — zoom laju ke heart
+  /* Phase 5 (22.5s) — zoom laju ke heart */
   setTimeout(function(){
     lerpSpeed=0.035;
     camPos.z=1.5; camPos.y=0; camPos.x=0;
     camLook.x=0; camLook.y=0;
-  },21000);
+  },22500);
 
-  // Phase 6 (22.5s) — next pop
+  /* Phase 6 (24s) — next pop */
   setTimeout(function(){
     var gn=document.getElementById('galaxyNext');
     gn.style.display='block';
     setTimeout(function(){ gn.classList.add('show'); },100);
-  },22500);
+  },24000);
 
   /* 🤏 PINCH ZOOM */
   var lastPinch=null;
@@ -306,7 +555,7 @@ function startGalaxy() {
     mouse.x=(cx/innerWidth)*2-1;
     mouse.y=-(cy/innerHeight)*2+1;
     raycaster.setFromCamera(mouse,camera);
-    if(raycaster.intersectObject(heartHitbox).length>0){goNextPart2Galaxy();return;}
+    if(raycaster.intersectObject(heartHitbox).length>0){showInvitation();return;}
     var hit=raycaster.intersectObjects(allImgMeshes);
     if(hit.length>0) spawnLove(hit[0].object.getWorldPosition(new THREE.Vector3()));
   }
@@ -337,14 +586,10 @@ function startGalaxy() {
   }
 
   /* 🔁 ANIMATE */
-  // Camera position & lookAt current (smooth lerp)
-  var curPos  = { x:0, y:7,  z:44 };
-  var curLook = { x:0, y:0,  z:0  };
-
   function animate(){
     requestAnimationFrame(animate);
 
-    // Boomerang arc — sin curve, x goes 0→peak→0 over arcDuration
+    /* Boomerang arc — sin(t*π) naturally goes 0→1→0 */
     if(arcActive){
       var elapsed=Date.now()-arcStart;
       var t=Math.min(elapsed/4000,1);
@@ -353,19 +598,14 @@ function startGalaxy() {
       camLook.y=Math.sin(t*Math.PI)*2;
     }
 
-    // Lerp camera position
-    curPos.x += (camPos.x - curPos.x) * lerpSpeed;
-    curPos.y += (camPos.y - curPos.y) * lerpSpeed;
-    curPos.z += (camPos.z - curPos.z) * lerpSpeed;
+    curPos.x += (camPos.x-curPos.x)*lerpSpeed;
+    curPos.y += (camPos.y-curPos.y)*lerpSpeed;
+    curPos.z += (camPos.z-curPos.z)*lerpSpeed;
+    curLook.x += (camLook.x-curLook.x)*lerpSpeed;
+    curLook.y += (camLook.y-curLook.y)*lerpSpeed;
+    camera.position.set(curPos.x,curPos.y,curPos.z);
+    camera.lookAt(curLook.x,curLook.y,curLook.z);
 
-    // Lerp lookAt target
-    curLook.x += (camLook.x - curLook.x) * lerpSpeed;
-    curLook.y += (camLook.y - curLook.y) * lerpSpeed;
-
-    camera.position.set(curPos.x, curPos.y, curPos.z);
-    camera.lookAt(curLook.x, curLook.y, curLook.z);
-
-    // Rotate
     rotY+=rotSpeed;
     galaxy.rotation.y=rotY;
     heartCenter.rotation.y=rotY;
@@ -401,86 +641,103 @@ function startGalaxy() {
 }
 </script>
 
+<!-- ═══ MATRIX + RAIN (auto goNext after 20s) ═══ -->
 <script>
 function check(){
   if(pass.value==='111498'){ login.style.display='none'; startMatrix(); }
 }
+
 function startMatrix(){
-  const phase=document.getElementById('matrix-phase');
+  var phase=document.getElementById('matrix-phase');
   phase.style.display='block';
-  const canvas=document.getElementById('matrixCanvas');
-  const ctx=canvas.getContext('2d');
+  var canvas=document.getElementById('matrixCanvas');
+  var ctx=canvas.getContext('2d');
   canvas.width=innerWidth; canvas.height=innerHeight;
-  const chars='アイウエオ0123456789♥';
-  const size=14, columns=canvas.width/size;
-  const drops=Array.from({length:columns},()=>Math.random()*-50);
-  const interval=setInterval(()=>{
+  var chars='アイウエオ0123456789♥';
+  var size=14, columns=canvas.width/size;
+  var drops=Array.from({length:columns},function(){return Math.random()*-50;});
+  var interval=setInterval(function(){
     ctx.fillStyle="rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle="#ff69b4"; ctx.font=size+"px monospace";
-    drops.forEach((y,i)=>{
+    drops.forEach(function(y,i){
       ctx.fillText(chars[Math.random()*chars.length|0],i*size,y*size);
       if(y*size>canvas.height && Math.random()>0.97) drops[i]=Math.random()*-20;
       drops[i]++;
     });
   },33);
-  setTimeout(()=>{
-    runCountdown(3,()=>{
+  setTimeout(function(){
+    runCountdown(3,function(){
       clearInterval(interval);
       phase.style.display='none';
-      startEffect(); fadeMusic();
+      startEffect();
+      fadeMusic();
     });
   },1500);
 }
+
 function runCountdown(n,cb){
-  const el=document.getElementById('countdown-num');
+  var el=document.getElementById('countdown-num');
   function show(num,done){
     el.textContent=num; el.style.opacity=1;
-    setTimeout(()=>{ el.style.opacity=0; setTimeout(done,300); },700);
+    setTimeout(function(){ el.style.opacity=0; setTimeout(done,300); },700);
   }
-  function next(){ if(n<1) return cb(); show(n--,()=>setTimeout(next,200)); }
+  function next(){ if(n<1) return cb(); show(n--,function(){setTimeout(next,200);}); }
   next();
 }
+
 function fadeMusic(){
-  music.volume=0; music.play();
-  let v=0;
-  const i=setInterval(()=>{ if(v<1){v+=0.05;music.volume=v;}else clearInterval(i); },200);
+  var m=document.getElementById('music');
+  m.volume=0;
+  m.play().catch(function(){});
+  var v=0;
+  var i=setInterval(function(){
+    if(v<1){ v+=0.05; m.volume=Math.min(v,1); } else clearInterval(i);
+  },200);
 }
-let rainImg,rainHeart,rainWish;
+
+var rainImg,rainHeart,rainWish;
+
 function startEffect(){
-  const images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
-  rainImg=setInterval(()=>{
-    const img=document.createElement('img');
+  var images=['pic1.jpg','pic2.jpg','pic3.jpg','pic4.jpg'];
+
+  rainImg=setInterval(function(){
+    var img=document.createElement('img');
     img.src=images[Math.random()*images.length|0];
     img.style.cssText='position:absolute;top:-100px;animation:fall 5s linear;';
     img.style.left=Math.random()*100+'%';
     img.style.width=(Math.random()*80+50)+'px';
     document.body.appendChild(img);
-    setTimeout(()=>img.remove(),5000);
+    setTimeout(function(){img.remove();},5000);
   },300);
-  rainHeart=setInterval(()=>{
-    let h=document.createElement("div");
+
+  rainHeart=setInterval(function(){
+    var h=document.createElement("div");
     h.className="heart"; h.innerHTML="❤️";
     h.style.left=Math.random()*100+"%";
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),5000);
+    setTimeout(function(){h.remove();},5000);
   },200);
-  rainWish=setInterval(()=>{
-    const t=document.createElement('div');
+
+  rainWish=setInterval(function(){
+    var t=document.createElement('div');
     t.className='wish'; t.innerHTML='happy birthday sayang ♥️';
     t.style.left=Math.random()*100+'%'; t.style.top=Math.random()*80+'%';
     document.body.appendChild(t);
-    setTimeout(()=>t.remove(),4000);
+    setTimeout(function(){t.remove();},4000);
   },500);
-  setTimeout(()=>{ nextBtn.classList.add('show'); },10000);
+
+  /* ← Auto pergi galaxy selepas 20 saat, tiada button next */
+  setTimeout(function(){ goNext(); },20000);
 }
+
 function goNext(){
   clearInterval(rainImg); clearInterval(rainHeart); clearInterval(rainWish);
-  document.querySelectorAll('.heart,.wish,img').forEach(el=>el.remove());
-  nextBtn.style.display='none';
+  document.querySelectorAll('.heart,.wish,img').forEach(function(el){el.remove();});
   document.querySelector('.webgl').style.display='block';
   document.body.style.background="black";
-  setTimeout(()=>startGalaxy(),200);
+  /* Lagu terus sambung — tak perlu restart, sama audio element */
+  setTimeout(function(){ startGalaxy(); },200);
 }
 </script>
 </body>
